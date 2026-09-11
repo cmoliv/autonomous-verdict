@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Special+Elite&family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,700;1,400&family=Inter:wght@400;500;600&display=swap");
 @import "tailwindcss" source(none);
 @source "../src";
 @import "tw-animate-css";
@@ -5,27 +6,24 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * Design system definition.
+ * ─── DESIGN SYSTEM ──────────────────────────────────────────────────────────
  *
- * The @theme inline block maps CSS custom properties to Tailwind utility
- * classes (e.g. --color-primary -> bg-primary, text-primary).
+ * Dois ambientes visuais distintos:
+ *   1. "Dossier" — Investigation File / capa do caso (papel envelhecido, tons quentes)
+ *   2. "Stage"   — Tribunal / modo de apresentação (escuro, cinematográfico)
+ *   3. "Admin"   — Área administrativa (funcional, limpa, tom neutro)
  *
- * The :root and .dark blocks define the actual color values using oklch.
- * All colors MUST use oklch format.
- *
- * To add a new semantic color:
- * 1. Add the variable to :root (light value) and .dark (dark value)
- * 2. Register it in @theme inline as --color-<name>: var(--<name>)
- */
+ * Tokens são expostos via @theme inline para usar como classes Tailwind.
+ * ──────────────────────────────────────────────────────────────────────────── */
 
 @theme inline {
+  /* ── Radius ── */
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
-  --radius-2xl: calc(var(--radius) + 8px);
-  --radius-3xl: calc(var(--radius) + 12px);
-  --radius-4xl: calc(var(--radius) + 16px);
+
+  /* ── Shadcn base colors (admin / generic) ── */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -45,12 +43,6 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-ring-offset-background: var(--background);
-  --color-chart-1: var(--chart-1);
-  --color-chart-2: var(--chart-2);
-  --color-chart-3: var(--chart-3);
-  --color-chart-4: var(--chart-4);
-  --color-chart-5: var(--chart-5);
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -59,86 +51,181 @@
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+
+  /* ── Dossier tokens (Investigation File) ── */
+  --color-paper: var(--paper);
+  --color-paper-dark: var(--paper-dark);
+  --color-paper-edge: var(--paper-edge);
+  --color-ink: var(--ink);
+  --color-ink-muted: var(--ink-muted);
+  --color-folder: var(--folder);
+  --color-bronze: var(--bronze);
+  --color-bronze-dim: var(--bronze-dim);
+  --color-stamp: var(--stamp);
+
+  /* ── Stage tokens (Tribunal / apresentação) ── */
+  --color-stage-bg: var(--stage-bg);
+  --color-stage-panel: var(--stage-panel);
+  --color-stage-line: var(--stage-line);
+  --color-stage-muted: var(--stage-muted);
+  --color-accusation: var(--accusation);
+  --color-accusation-dim: var(--accusation-dim);
+  --color-defense: var(--defense);
+  --color-defense-dim: var(--defense-dim);
+
+  /* ── Shadow tokens ── */
+  --shadow-dossier: var(--shadow-dossier);
+  --shadow-stage: var(--shadow-stage);
+
+  /* ── Typography ── */
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
+  --font-body: var(--font-body);
 }
 
+/* ── Color values ──────────────────────────────────────────────────────────── */
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.25rem;
+
+  /* Shadcn admin base (slightly warm neutral) */
+  --background: oklch(0.97 0.004 80);
+  --foreground: oklch(0.18 0.02 80);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.18 0.02 80);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
-  --chart-1: oklch(0.646 0.222 41.116);
-  --chart-2: oklch(0.6 0.118 184.704);
-  --chart-3: oklch(0.398 0.07 227.392);
-  --chart-4: oklch(0.828 0.189 84.429);
-  --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --popover-foreground: oklch(0.18 0.02 80);
+  --primary: oklch(0.22 0.025 80);
+  --primary-foreground: oklch(0.96 0.006 80);
+  --secondary: oklch(0.93 0.01 80);
+  --secondary-foreground: oklch(0.22 0.025 80);
+  --muted: oklch(0.93 0.01 80);
+  --muted-foreground: oklch(0.52 0.02 80);
+  --accent: oklch(0.91 0.015 75);
+  --accent-foreground: oklch(0.22 0.025 80);
+  --destructive: oklch(0.52 0.21 25);
+  --destructive-foreground: oklch(0.97 0 0);
+  --border: oklch(0.86 0.01 80);
+  --input: oklch(0.86 0.01 80);
+  --ring: oklch(0.55 0.03 80);
+  --sidebar: oklch(0.94 0.008 80);
+  --sidebar-foreground: oklch(0.18 0.02 80);
+  --sidebar-primary: oklch(0.22 0.025 80);
+  --sidebar-primary-foreground: oklch(0.96 0.006 80);
+  --sidebar-accent: oklch(0.9 0.012 80);
+  --sidebar-accent-foreground: oklch(0.22 0.025 80);
+  --sidebar-border: oklch(0.86 0.01 80);
+  --sidebar-ring: oklch(0.55 0.03 80);
+
+  /* ── Dossier palette (papel envelhecido / dossiê investigativo) ── */
+  /* Warm aged paper */
+  --paper: oklch(0.95 0.024 78);
+  --paper-dark: oklch(0.88 0.028 72);
+  --paper-edge: oklch(0.78 0.032 68);
+  --ink: oklch(0.18 0.025 60);
+  --ink-muted: oklch(0.42 0.025 65);
+  /* Folder tab accent */
+  --folder: oklch(0.78 0.042 68);
+  /* Bronze / gold worn */
+  --bronze: oklch(0.65 0.085 68);
+  --bronze-dim: oklch(0.52 0.07 68);
+  /* Stamp red (classification seal) */
+  --stamp: oklch(0.48 0.18 25);
+
+  /* ── Stage palette (sala de tribunal — escuro, cinematográfico) ── */
+  --stage-bg: oklch(0.11 0.016 260);
+  --stage-panel: oklch(0.15 0.018 260);
+  --stage-line: oklch(1 0 0 / 10%);
+  --stage-muted: oklch(0.62 0.025 260);
+  /* Acusação — vermelho profundo */
+  --accusation: oklch(0.55 0.19 25);
+  --accusation-dim: oklch(0.22 0.12 25);
+  /* Defesa — azul profundo */
+  --defense: oklch(0.52 0.14 240);
+  --defense-dim: oklch(0.20 0.10 240);
+
+  /* ── Shadows ── */
+  --shadow-dossier: 0 4px 32px oklch(0.18 0.025 60 / 22%), 0 1px 4px oklch(0.18 0.025 60 / 12%);
+  --shadow-stage: 0 0 80px oklch(0.65 0.085 68 / 8%);
+
+  /* ── Typography ── */
+  --font-display: "Bebas Neue", "Special Elite", serif;
+  --font-mono: "IBM Plex Mono", "Courier New", monospace;
+  --font-body: "Inter", system-ui, sans-serif;
 }
 
-.dark {
-  --background: oklch(0.129 0.042 264.695);
-  --foreground: oklch(0.984 0.003 247.858);
-  --card: oklch(0.208 0.042 265.755);
-  --card-foreground: oklch(0.984 0.003 247.858);
-  --popover: oklch(0.208 0.042 265.755);
-  --popover-foreground: oklch(0.984 0.003 247.858);
-  --primary: oklch(0.929 0.013 255.508);
-  --primary-foreground: oklch(0.208 0.042 265.755);
-  --secondary: oklch(0.279 0.041 260.031);
-  --secondary-foreground: oklch(0.984 0.003 247.858);
-  --muted: oklch(0.279 0.041 260.031);
-  --muted-foreground: oklch(0.704 0.04 256.788);
-  --accent: oklch(0.279 0.041 260.031);
-  --accent-foreground: oklch(0.984 0.003 247.858);
-  --destructive: oklch(0.704 0.191 22.216);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.551 0.027 264.364);
-  --chart-1: oklch(0.488 0.243 264.376);
-  --chart-2: oklch(0.696 0.17 162.48);
-  --chart-3: oklch(0.769 0.188 70.08);
-  --chart-4: oklch(0.627 0.265 303.9);
-  --chart-5: oklch(0.645 0.246 16.439);
-  --sidebar: oklch(0.208 0.042 265.755);
-  --sidebar-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.279 0.041 260.031);
-  --sidebar-accent-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.551 0.027 264.364);
-}
-
+/* ── Global base ──────────────────────────────────────────────────────────── */
 @layer base {
   * {
     border-color: var(--color-border);
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+  }
+
+  /* Display font utility */
+  .font-display {
+    font-family: var(--font-display);
+    letter-spacing: 0.02em;
+  }
+
+  .font-mono {
+    font-family: var(--font-mono);
+  }
+}
+
+/* ── Dossier / Investigation File utilities ───────────────────────────────── */
+@layer utilities {
+  /* Paper noise texture overlay (CSS-only grain) */
+  .paper-noise {
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.72' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+    background-repeat: repeat;
+    background-size: 180px 180px;
+    mix-blend-mode: multiply;
+    pointer-events: none;
+  }
+
+  /* Stage backgrounds */
+  .trial-stage {
+    background-color: var(--stage-bg);
+    color: oklch(0.92 0.01 80);
+    font-family: var(--font-body);
+  }
+
+  .stage-accusation {
+    background-color: var(--accusation-dim);
+  }
+
+  .stage-defense {
+    background-color: var(--defense-dim);
+  }
+
+  /* Dossier file cover */
+  .file-cover {
+    font-family: var(--font-body);
+  }
+
+  /* Scanline overlay for cinematic effect */
+  .scanlines::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      transparent 0px,
+      transparent 2px,
+      oklch(0 0 0 / 3%) 2px,
+      oklch(0 0 0 / 3%) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
   }
 }
