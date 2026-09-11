@@ -11,6 +11,7 @@ export const Route = createFileRoute("/admin/cases/$caseId")({
     meta: [{ title: `Editar ${loaderData?.code ?? "Caso"} · Admin · Tribunal` }] 
   }),
   loader: async ({ params }) => {
+    if (typeof window === "undefined") return null as any;
     try {
       return await getAdminCase({ data: { id: params.caseId } });
     } catch {
@@ -36,6 +37,8 @@ function EditCasePage() {
       toast.error(`Erro ao atualizar caso: ${error.message}`);
     },
   });
+
+  if (!caseData) return null;
 
   return (
     <div className="min-h-screen bg-background pb-20">
@@ -64,8 +67,8 @@ function EditCasePage() {
       <main className="mx-auto max-w-6xl px-4 sm:px-8">
         <CaseForm 
           initialData={caseData}
-          onSubmit={(data) => mutation.mutate(data)} 
-          isSubmitting={mutation.isPending} 
+          onSubmit={(data) => mutation.mutate(data)}
+          isSubmitting={mutation.isPending}
         />
       </main>
     </div>

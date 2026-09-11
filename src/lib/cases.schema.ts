@@ -54,6 +54,10 @@ export const incidentDataSchema = z.object({
   decision_time: z.number().nullable().optional(), // seconds, e.g. 0.8
   vehicle_speed: z.number().nullable().optional(),
   survival_probability: z.number().nullable().optional(),
+  survival_probabilities: z.array(z.object({
+    decision: z.string().min(1, "Decisão obrigatória"),
+    probability: z.string().min(1, "Probabilidade obrigatória")
+  })).default([]),
   location: z.string().nullable().optional(),
   weather: z.string().nullable().optional(),
   visibility: z.string().nullable().optional(),

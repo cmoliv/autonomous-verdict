@@ -58,6 +58,7 @@ export function CaseForm({ initialData, onSubmit, isSubmitting }: CaseFormProps)
         decision_time: 0,
         vehicle_speed: 0,
         survival_probability: 0,
+        survival_probabilities: [],
         location: "",
         weather: "",
         visibility: "",
@@ -201,9 +202,6 @@ export function CaseForm({ initialData, onSubmit, isSubmitting }: CaseFormProps)
               <Field label="Velocidade (km/h)">
                 <Input type="number" {...register("incident_data.vehicle_speed", { setValueAs: toNumberOrNull })} />
               </Field>
-              <Field label="Prob. de Sobrevivência (%)">
-                <Input type="number" {...register("incident_data.survival_probability", { setValueAs: toNumberOrNull })} />
-              </Field>
               <Field label="Local">
                 <Input {...register("incident_data.location")} placeholder="Ex: Avenida urbana" />
               </Field>
@@ -213,6 +211,11 @@ export function CaseForm({ initialData, onSubmit, isSubmitting }: CaseFormProps)
               <Field label="Visibilidade">
                 <Input {...register("incident_data.visibility")} placeholder="Ex: Parcial" />
               </Field>
+            </div>
+            
+            <div className="pt-4 border-t">
+              <h3 className="text-sm font-medium mb-4">Probabilidades de Sobrevivência</h3>
+              <SurvivalProbabilitiesList control={control} register={register} />
             </div>
           </div>
 
@@ -289,6 +292,40 @@ Select.displayName = "Select";
 function Error({ msg }: { msg?: string }) {
   if (!msg) return null;
   return <span className="text-xs text-destructive">{msg}</span>;
+}
+
+// ─── Survival Probabilities List ──────────────────────────────────────────────
+
+function SurvivalProbabilitiesList({ control, register }: any) {
+  const { fields, append, remove } = useFieldArray({
+    control,
+    name: "incident_data.survival_probabilities"
+  });
+
+  return (
+    <div className="space-y-4">
+      {fields.map((field, index) => (
+        <div key={field.id} className="flex gap-4 items-start">
+          <div className="flex-1">
+            <Field label="Decisão">
+              <Input {...register(`incident_data.survival_probabilities.${index}.decision`)} placeholder="Ex: Manter Rota" />
+            </Field>
+          </div>
+          <div className="flex-1">
+            <Field label="Probabilidade">
+              <Input {...register(`incident_data.survival_probabilities.${index}.probability`)} placeholder="Ex: 85% para ocupantes" />
+            </Field>
+          </div>
+          <Button type="button" variant="ghost" size="icon" className="mt-6 text-muted-foreground hover:text-destructive" onClick={() => remove(index)}>
+            <Trash2 className="size-4" />
+          </Button>
+        </div>
+      ))}
+      <Button type="button" variant="outline" size="sm" onClick={() => append({ decision: "", probability: "" })}>
+        <Plus className="size-4 mr-2" /> Adicionar Probabilidade
+      </Button>
+    </div>
+  );
 }
 
 // ─── Evidence List ────────────────────────────────────────────────────────────

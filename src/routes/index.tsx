@@ -3,6 +3,7 @@ import { listPublishedCases } from "@/lib/cases.functions";
 import { FileLock2, Scale, Stamp } from "lucide-react";
 
 import { useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -23,6 +24,13 @@ function HomePage() {
     queryKey: ["published-cases"],
     queryFn: () => listPublishedCases(),
   });
+
+  const [finishedCases, setFinishedCases] = useState<string[]>([]);
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setFinishedCases(JSON.parse(localStorage.getItem("autonomous_verdict_finished_cases") || "[]"));
+    }
+  }, []);
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--paper)" }}>
@@ -67,7 +75,7 @@ function HomePage() {
         ) : (
           <div className="grid gap-6 sm:grid-cols-2">
             {cases.map((c) => (
-              <CaseDossier key={c.id} caseData={c} />
+              <CaseDossier key={c.id} caseData={c} isFinished={finishedCases.includes(c.id)} />
             ))}
           </div>
         )}
@@ -85,7 +93,7 @@ function HomePage() {
 
 type CaseRow = Awaited<ReturnType<typeof listPublishedCases>>[number];
 
-function CaseDossier({ caseData }: { caseData: CaseRow }) {
+function CaseDossier({ caseData, isFinished }: { caseData: CaseRow; isFinished?: boolean }) {
   return (
     <Link
       to="/cases/$caseId"
@@ -119,12 +127,21 @@ function CaseDossier({ caseData }: { caseData: CaseRow }) {
                 {caseData.code}
               </p>
             </div>
-            <div
-              className="rotate-[-4deg] border-2 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest"
-              style={{ borderColor: "var(--stamp)", color: "var(--stamp)" }}
-            >
-              {caseData.is_final ? "Final" : "Confidencial"}
-            </div>
+            {isFinished ? (
+              <div
+                className="rotate-[-4deg] border-2 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest bg-green-900/20"
+                style={{ borderColor: "var(--success, #22c55e)", color: "var(--success, #22c55e)" }}
+              >
+                Julgado
+              </div>
+            ) : (
+              <div
+                className="rotate-[-4deg] border-2 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest"
+                style={{ borderColor: "var(--stamp)", color: "var(--stamp)" }}
+              >
+                {caseData.is_final ? "Final" : "Confidencial"}
+              </div>
+            )}
           </div>
 
           {/* Case number + title */}

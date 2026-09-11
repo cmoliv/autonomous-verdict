@@ -37,7 +37,17 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
   const [panel, setPanel] = useState(false);
   const [paused, setPaused] = useState(false);
   const [seconds, setSeconds] = useState(180);
-  const [scores, setScores] = useState({ accusation: 0, defense: 0 });
+  const [scores, setScores] = useState(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem("autonomous_verdict_session_scores");
+      if (stored) return JSON.parse(stored);
+    }
+    return { accusation: 0, defense: 0 };
+  });
+  const [scored, setScored] = useState(false);
+  const [caseWinner, setCaseWinner] = useState<"accusation" | "defense" | null>(null);
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [showCaseWinnerModal, setShowCaseWinnerModal] = useState(false);
   const phase = phases[index];
 
   useEffect(() => {
@@ -70,8 +80,14 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
     }
   }, [index, phase.kind]);
 
-  const next = () => { setIndex((value) => Math.min(phases.length - 1, value + 1)); setSeconds(180); };
-  const previous = () => { setIndex((value) => Math.max(0, value - 1)); setSeconds(180); };
+  const next = () => { 
+    setIndex((value) => Math.min(phases.length - 1, value + 1)); 
+    setSeconds(180); 
+  };
+  const previous = () => { 
+    setIndex((value) => Math.max(0, value - 1)); 
+    setSeconds(180); 
+  };
   if (phase.kind === "cover") return <main className="trial-stage min-h-screen px-4 py-10 sm:px-8"><CaseFileCover caseData={data} onOpen={next} /></main>;
 
   const isAccusation = phase.kind === "argument" || phase.kind === "objection";
@@ -151,26 +167,140 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
             />
           )}
           {phase.kind === "witness" && !phase.witness?.video_path && <div className="mx-auto mt-8 flex h-40 max-w-2xl items-center justify-center border border-stage-line bg-stage-panel"><Play className="size-10 text-bronze" /><span className="ml-3 font-mono text-xs uppercase text-stage-muted">Registro audiovisual não anexado</span></div>}
-          {phase.kind === "score" && <Scoreboard scores={scores} points={data.points} onScore={(side) => setScores((old) => ({ ...old, [side]: old[side] + data.points }))} />}
+          {phase.kind === "score" && <Scoreboard scores={scores} points={data.points} disabled={scored} onScore={(side) => {
+            if (scored) return;
+            setScored(true);
+            setCaseWinner(side);
+            const newScores = { ...scores, [side]: scores[side] + data.points };
+            setScores(newScores);
+            localStorage.setItem("autonomous_verdict_session_scores", JSON.stringify(newScores));
+          }} />}
         </div>
       </section>
       <footer className="flex items-center justify-between border-t border-stage-line px-4 py-4 sm:px-8">
         <Button variant="stageGhost" onClick={previous} disabled={index === 0}><ArrowLeft /> Anterior</Button>
         <div className="flex items-center gap-2 font-mono text-sm text-stage-muted"><Timer className="size-4" />{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}<Button variant="stageGhost" size="icon" aria-label={paused ? "Continuar" : "Pausar"} onClick={() => setPaused(!paused)}>{paused ? <Play /> : <Pause />}</Button></div>
-        <Button variant="stage" onClick={next} disabled={index === phases.length - 1}>Próximo <ArrowRight /></Button>
+        {index === phases.length - 1 ? (
+          <Button variant="stage" onClick={() => {
+            const finished = JSON.parse(localStorage.getItem("autonomous_verdict_finished_cases") || "[]");
+            if (!finished.includes(data.id)) {
+              finished.push(data.id);
+              localStorage.setItem("autonomous_verdict_finished_cases", JSON.stringify(finished));
+            }
+            if (data.is_final) {
+              setShowWinnerModal(true);
+            } else {
+              setShowCaseWinnerModal(true);
+              setTimeout(() => {
+                window.location.href = "/";
+              }, 4000);
+            }
+          }}>Encerrar Caso <ArrowRight /></Button>
+        ) : (
+          <Button variant="stage" onClick={next}>Próximo <ArrowRight /></Button>
+        )}
       </footer>
       {panel && <aside className="absolute right-5 top-20 z-20 w-[min(360px,calc(100%-40px))] border border-bronze bg-stage-panel p-5 shadow-2xl"><p className="font-mono text-xs uppercase text-bronze">Painel do Apresentador</p><p className="mt-4 text-sm text-stage-muted">Fase atual</p><p className="font-display text-xl uppercase">{phase.label}</p><p className="mt-4 text-sm text-stage-muted">Próximo</p><p>{phases[index + 1]?.label ?? "Fim da sessão"}</p><div className="mt-5 flex gap-2"><Button variant="stage" onClick={next}>Próximo</Button><Button variant="stageGhost" onClick={() => setPaused(!paused)}>{paused ? "Continuar" : "Pausar"}</Button></div></aside>}
+
+      {showWinnerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
+          <div className="w-full max-w-2xl border border-bronze bg-stage-panel p-10 text-center shadow-2xl animate-in zoom-in-95 duration-500">
+            <h2 className="font-mono text-sm uppercase tracking-widest text-bronze">Veredito Final da Sessão</h2>
+            <div className="mt-8 flex items-center justify-center gap-8">
+              <div className={`flex flex-col items-center ${scores.accusation > scores.defense ? "scale-110 text-accusation" : scores.defense > scores.accusation ? "opacity-50 grayscale" : "text-accusation"}`}>
+                <span className="font-display text-6xl">{scores.accusation}</span>
+                <span className="font-mono text-xs uppercase mt-2">Acusação</span>
+              </div>
+              <div className="text-stage-muted font-display text-3xl">X</div>
+              <div className={`flex flex-col items-center ${scores.defense > scores.accusation ? "scale-110 text-defense" : scores.accusation > scores.defense ? "opacity-50 grayscale" : "text-defense"}`}>
+                <span className="font-display text-6xl">{scores.defense}</span>
+                <span className="font-mono text-xs uppercase mt-2">Defesa</span>
+              </div>
+            </div>
+            <div className="mt-10 font-display text-4xl uppercase">
+              {scores.accusation > scores.defense ? (
+                <span className="text-accusation">A Acusação Venceu</span>
+              ) : scores.defense > scores.accusation ? (
+                <span className="text-defense">A Defesa Venceu</span>
+              ) : (
+                <span className="text-stage-muted">Empate</span>
+              )}
+            </div>
+            <div className="mt-10 flex justify-center gap-4">
+              <Button variant="stageGhost" onClick={() => setShowWinnerModal(false)}>Fechar</Button>
+              <Button variant="stage" onClick={() => {
+                localStorage.removeItem("autonomous_verdict_session_scores");
+                window.location.href = "/";
+              }}>Encerrar Sessão</Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {showCaseWinnerModal && !showWinnerModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm animate-in fade-in duration-500">
+          <div className="w-full max-w-2xl border border-bronze bg-stage-panel p-10 text-center shadow-2xl animate-in zoom-in-95 duration-500">
+            <h2 className="font-mono text-sm uppercase tracking-widest text-bronze">Veredito do Caso</h2>
+            <div className="mt-10 font-display text-4xl uppercase">
+              {caseWinner === "accusation" ? (
+                <span className="text-accusation">A Acusação Venceu o Caso</span>
+              ) : caseWinner === "defense" ? (
+                <span className="text-defense">A Defesa Venceu o Caso</span>
+              ) : (
+                <span className="text-stage-muted">Nenhum Veredito</span>
+              )}
+            </div>
+            <p className="mt-6 font-mono text-xs uppercase text-stage-muted tracking-widest animate-pulse">
+              Retornando aos dossiês...
+            </p>
+          </div>
+        </div>
+      )}
     </main>
   );
 }
 
 function IncidentGrid({ data }: { data: NonNullable<CaseFile["incident_data"]> }) {
-  const rows = [["Passageiros", data.passengers], ["Pedestres", data.pedestrians], ["Tempo para decisão", data.decision_time != null ? `${data.decision_time}s` : null], ["Velocidade", data.vehicle_speed != null ? `${data.vehicle_speed} km/h` : null], ["Sobrevivência", data.survival_probability != null ? `${data.survival_probability}%` : null], ["Condição", data.weather]];
-  return <div className="mx-auto mt-10 grid max-w-4xl grid-cols-2 border-l border-t border-stage-line sm:grid-cols-3">{rows.filter(([, value]) => value != null).map(([label, value]) => <div key={String(label)} className="border-b border-r border-stage-line p-4 text-left"><p className="font-mono text-[10px] uppercase text-stage-muted">{label}</p><p className="mt-1 font-display text-xl uppercase">{value}</p></div>)}</div>;
+  const rows = [
+    ["Passageiros", data.passengers], 
+    ["Pedestres", data.pedestrians], 
+    ["Tempo para decisão", data.decision_time != null ? `${data.decision_time}s` : null], 
+    ["Velocidade", data.vehicle_speed != null ? `${data.vehicle_speed} km/h` : null], 
+    ...(data.survival_probability != null ? [["Sobrevivência (Legado)", `${data.survival_probability}%`]] : []),
+    ["Condição", data.weather]
+  ];
+  return (
+    <div className="mx-auto mt-10 max-w-4xl">
+      <div className="grid grid-cols-2 border-l border-t border-stage-line sm:grid-cols-3">
+        {rows.filter(([, value]) => value != null).map(([label, value]) => (
+          <div key={String(label)} className="border-b border-r border-stage-line p-4 text-left">
+            <p className="font-mono text-[10px] uppercase text-stage-muted">{label}</p>
+            <p className="mt-1 font-display text-xl uppercase">{value}</p>
+          </div>
+        ))}
+      </div>
+      
+      {data.survival_probabilities && data.survival_probabilities.length > 0 && (
+        <div className="mt-6 border border-stage-line bg-stage-panel/30">
+          <div className="border-b border-stage-line p-3">
+            <p className="font-mono text-xs uppercase text-bronze text-center tracking-widest">Cenários de Sobrevivência</p>
+          </div>
+          <div className="grid sm:grid-cols-2 divide-y sm:divide-y-0 sm:divide-x divide-stage-line">
+            {data.survival_probabilities.map((prob, i) => (
+              <div key={i} className="p-4 text-left">
+                <p className="font-mono text-[10px] uppercase text-stage-muted">{prob.decision}</p>
+                <p className="mt-1 font-display text-2xl text-bronze">{prob.probability}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+    </div>
+  );
 }
 
-function Scoreboard({ scores, points, onScore }: { scores: { accusation: number; defense: number }; points: number; onScore: (side: "accusation" | "defense") => void }) {
-  return <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-px bg-stage-line"><button className="bg-stage-panel p-8 text-accusation" onClick={() => onScore("accusation")}><span className="font-mono text-xs uppercase">Acusação</span><strong className="mt-3 block font-display text-6xl">{scores.accusation}</strong><span className="text-xs">+ {points} {points === 1 ? "ponto" : "pontos"}</span></button><button className="bg-stage-panel p-8 text-defense" onClick={() => onScore("defense")}><span className="font-mono text-xs uppercase">Defesa</span><strong className="mt-3 block font-display text-6xl">{scores.defense}</strong><span className="text-xs">+ {points} {points === 1 ? "ponto" : "pontos"}</span></button></div>;
+function Scoreboard({ scores, points, onScore, disabled }: { scores: { accusation: number; defense: number }; points: number; onScore: (side: "accusation" | "defense") => void; disabled?: boolean }) {
+  return <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-px bg-stage-line"><button className="bg-stage-panel p-8 text-accusation disabled:opacity-50 disabled:cursor-not-allowed transition-opacity" disabled={disabled} onClick={() => onScore("accusation")}><span className="font-mono text-xs uppercase">Acusação</span><strong className="mt-3 block font-display text-6xl">{scores.accusation}</strong><span className="text-xs">+ {points} {points === 1 ? "ponto" : "pontos"}</span></button><button className="bg-stage-panel p-8 text-defense disabled:opacity-50 disabled:cursor-not-allowed transition-opacity" disabled={disabled} onClick={() => onScore("defense")}><span className="font-mono text-xs uppercase">Defesa</span><strong className="mt-3 block font-display text-6xl">{scores.defense}</strong><span className="text-xs">+ {points} {points === 1 ? "ponto" : "pontos"}</span></button></div>;
 }
 
 function EvidenceCardReveal({ title, body }: { title: string; body?: string }) {

@@ -14,6 +14,7 @@ export const Route = createFileRoute("/cases/$caseId")({
       : [{ title: "Caso não encontrado · Tribunal dos Carros Autônomos" }],
   }),
   loader: async ({ params }) => {
+    if (typeof window === "undefined") return null as any;
     try {
       return await getPublishedCase({ data: { id: params.caseId } });
     } catch {
@@ -28,6 +29,7 @@ export const Route = createFileRoute("/cases/$caseId")({
 
 function CasePage() {
   const data = Route.useLoaderData();
+  if (!data) return null;
   return <TrialExperience data={data} />;
 }
 
@@ -38,10 +40,7 @@ function CaseNotFound() {
       style={{ backgroundColor: "var(--stage-bg)", color: "var(--stage-muted)" }}
     >
       <p className="font-mono text-xs uppercase tracking-[0.3em]">Arquivo não encontrado</p>
-      <h1
-        className="mt-4 font-display text-6xl uppercase"
-        style={{ color: "var(--accusation)" }}
-      >
+      <h1 className="mt-4 font-display text-6xl uppercase" style={{ color: "var(--accusation)" }}>
         CASO NÃO ENCONTRADO
       </h1>
       <a

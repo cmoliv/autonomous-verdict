@@ -16,6 +16,7 @@ import {
   Upload,
   Copy as CopyIcon,
   Check,
+  RefreshCcw,
 } from "lucide-react";
 import { 
   listAllCases, 
@@ -145,6 +146,16 @@ function AdminDashboard() {
           <Button size="sm" variant="outline" className="gap-1.5" onClick={() => document.getElementById("import-cases")?.click()}>
             <Upload className="size-3.5" />
             Importar
+          </Button>
+          <Button size="sm" variant="outline" className="gap-1.5 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive" onClick={() => {
+            if (confirm("Tem certeza que deseja zerar o progresso dos casos e o placar da sessão ativa?")) {
+              localStorage.removeItem("autonomous_verdict_session_scores");
+              localStorage.removeItem("autonomous_verdict_finished_cases");
+              alert("Progresso e placar zerados com sucesso.");
+            }
+          }}>
+            <RefreshCcw className="size-3.5" />
+            Resetar Progresso
           </Button>
           <Link to="/admin/cases/new">
             <Button size="sm" className="gap-1.5">

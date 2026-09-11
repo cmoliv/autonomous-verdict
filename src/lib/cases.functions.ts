@@ -29,6 +29,7 @@ export type IncidentData = {
   decision_time?: number | null;
   vehicle_speed?: number | null;
   survival_probability?: number | null;
+  survival_probabilities?: { decision: string; probability: string }[];
   location?: string | null;
   weather?: string | null;
   visibility?: string | null;
@@ -285,6 +286,10 @@ const SEED_AV001: CaseFile = {
     decision_time: 0.8,
     vehicle_speed: 68,
     survival_probability: 45,
+    survival_probabilities: [
+      { decision: "Manter trajetória", probability: "45% passageiro / 10% pedestres" },
+      { decision: "Desviar (poste)", probability: "45% passageiro / 92% pedestres mortos" }
+    ],
     location: "Avenida Marginal (trecho chuvoso)",
     weather: "Chuva intensa",
     visibility: "Baixa"

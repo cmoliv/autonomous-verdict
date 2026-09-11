@@ -13,6 +13,7 @@ export const Route = createFileRoute("/admin/cases/$caseId/preview")({
     ],
   }),
   loader: async ({ params }) => {
+    if (typeof window === "undefined") return null as any;
     try {
       return await getAdminCase({ data: { id: params.caseId } });
     } catch {
@@ -24,5 +25,6 @@ export const Route = createFileRoute("/admin/cases/$caseId/preview")({
 
 function PreviewPage() {
   const data = Route.useLoaderData();
+  if (!data) return null;
   return <TrialExperience data={data} preview />;
 }
