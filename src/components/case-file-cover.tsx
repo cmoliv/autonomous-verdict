@@ -27,14 +27,14 @@ export function CaseFileCover({ caseData, onOpen }: { caseData: PublicCase; onOp
               <p className="font-mono text-[11px] uppercase tracking-[0.26em]">Classificação restrita</p>
               <p className="mt-2 font-mono text-xs">PROCESSO {caseData.code}</p>
             </div>
-            <div className="rotate-[-5deg] border-2 border-stamp px-3 py-1 font-mono text-xs font-bold uppercase text-stamp">Confidential</div>
+            <div className="rotate-[-5deg] border-2 border-stamp px-3 py-1 font-mono text-xs font-bold uppercase text-stamp">Confidencial</div>
           </div>
           <div className="flex flex-1 flex-col items-center justify-center py-12 text-center">
             <FileLock2 className="mb-6 size-10 text-bronze" strokeWidth={1.5} />
-            <p className="font-mono text-xs uppercase tracking-[0.34em]">Autonomous vehicle</p>
-            <h1 className="mt-3 font-display text-4xl font-semibold uppercase leading-none sm:text-6xl">Investigation File</h1>
+            <p className="font-mono text-xs uppercase tracking-[0.34em]">Veículo Autônomo</p>
+            <h1 className="mt-3 font-display text-4xl font-semibold uppercase leading-none sm:text-6xl">Dossiê de Investigação</h1>
             <div className="my-7 h-px w-24 bg-ink/40" />
-            <p className="font-mono text-sm uppercase tracking-[0.22em]">Case {String(caseData.number).padStart(3, "0")}</p>
+            <p className="font-mono text-sm uppercase tracking-[0.22em]">Caso {String(caseData.number).padStart(3, "0")}</p>
             <h2 className="mt-3 max-w-2xl font-display text-3xl font-bold uppercase sm:text-5xl">{caseData.title}</h2>
             {caseData.subtitle && <p className="mt-3 text-base italic text-ink-muted sm:text-lg">{caseData.subtitle}</p>}
           </div>
@@ -51,7 +51,7 @@ export function CaseFileCover({ caseData, onOpen }: { caseData: PublicCase; onOp
               disabled={isOpening}
               className="mt-12 w-full gap-3 bg-bronze text-stage-bg hover:bg-bronze-dim"
             >
-              {isOpening ? "OPENING..." : "OPEN FILE"}
+              {isOpening ? "ABRINDO..." : "ABRIR DOSSIÊ"}
               <ArrowRight className={`size-5 ${isOpening ? "translate-x-2 transition-transform" : ""}`} />
             </Button>
           )}

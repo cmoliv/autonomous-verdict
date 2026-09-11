@@ -123,7 +123,7 @@ function CaseDossier({ caseData }: { caseData: CaseRow }) {
               className="rotate-[-4deg] border-2 px-2 py-0.5 font-mono text-[9px] font-bold uppercase tracking-widest"
               style={{ borderColor: "var(--stamp)", color: "var(--stamp)" }}
             >
-              {caseData.is_final ? "Final" : "Confidential"}
+              {caseData.is_final ? "Final" : "Confidencial"}
             </div>
           </div>
 

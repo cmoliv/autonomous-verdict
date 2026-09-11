@@ -12,20 +12,20 @@ type Phase = { kind: string; label: string; title: string; eyebrow: string; body
 function buildPhases(data: CaseFile): Phase[] {
   const phases: Phase[] = [
     { kind: "cover", label: "Arquivo", title: data.title, eyebrow: data.code },
-    { kind: "incident", label: "Incidente", title: "Relatório do incidente", eyebrow: "Incident report", body: data.description },
-    { kind: "decision", label: "Decisão", title: data.algorithm_title, eyebrow: "Algorithm decision", body: data.algorithm_description },
-    { kind: "argument", label: "Acusação", title: "A acusação apresenta seus argumentos", eyebrow: "Accusation argues" },
-    { kind: "argument-defense", label: "Defesa", title: "A defesa apresenta seus argumentos", eyebrow: "Defense argues" },
-    ...data.evidence.map((evidence) => ({ kind: "evidence", label: `Evidência ${evidence.number}`, title: evidence.title, eyebrow: `Evidence #${String(evidence.number).padStart(2, "0")}`, body: evidence.description, evidence })),
+    { kind: "incident", label: "Incidente", title: "Relatório do incidente", eyebrow: "Relatório de Incidente", body: data.description },
+    { kind: "decision", label: "Decisão", title: data.algorithm_title, eyebrow: "Decisão do Algoritmo", body: data.algorithm_description },
+    { kind: "argument", label: "Acusação", title: "A acusação apresenta seus argumentos", eyebrow: "Argumentação da Acusação" },
+    { kind: "argument-defense", label: "Defesa", title: "A defesa apresenta seus argumentos", eyebrow: "Argumentação da Defesa" },
+    ...data.evidence.map((evidence) => ({ kind: "evidence", label: `Evidência ${evidence.number}`, title: evidence.title, eyebrow: `Evidência #${String(evidence.number).padStart(2, "0")}`, body: evidence.description, evidence })),
   ];
   data.witnesses.forEach((witness) => {
-    phases.push({ kind: "witness", label: `Testemunha ${witness.number}`, title: witness.name, eyebrow: "Witness statement", body: witness.mediator_intro ?? witness.description ?? undefined, witness });
-    witness.evidence_cards.forEach((card) => phases.push({ kind: "card", label: "Descoberta", title: card.title, eyebrow: "New evidence discovered", body: card.content, witness }));
+    phases.push({ kind: "witness", label: `Testemunha ${witness.number}`, title: witness.name, eyebrow: "Depoimento da Testemunha", body: witness.mediator_intro ?? witness.description ?? undefined, witness });
+    witness.evidence_cards.forEach((card) => phases.push({ kind: "card", label: "Descoberta", title: card.title, eyebrow: "Nova evidência descoberta", body: card.content, witness }));
   });
   phases.push(
-    { kind: "objection", label: "Objection", title: "OBJECTION!", eyebrow: "Contestação judicial" },
-    { kind: "verdict", label: "Veredito", title: "O tribunal deve decidir", eyebrow: "The verdict", body: data.central_question },
-    { kind: "score", label: "Placar", title: "Resultado do julgamento", eyebrow: "Score update" },
+    { kind: "objection", label: "Protesto", title: "PROTESTO!", eyebrow: "Contestação judicial" },
+    { kind: "verdict", label: "Veredito", title: "O tribunal deve decidir", eyebrow: "O veredito", body: data.central_question },
+    { kind: "score", label: "Placar", title: "Resultado do julgamento", eyebrow: "Atualização de Placar" },
   );
   return phases;
 }
@@ -117,7 +117,7 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
         <div className="flex items-center gap-2 font-mono text-sm text-stage-muted"><Timer className="size-4" />{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}<Button variant="stageGhost" size="icon" aria-label={paused ? "Continuar" : "Pausar"} onClick={() => setPaused(!paused)}>{paused ? <Play /> : <Pause />}</Button></div>
         <Button variant="stage" onClick={next} disabled={index === phases.length - 1}>Próximo <ArrowRight /></Button>
       </footer>
-      {panel && <aside className="absolute right-5 top-20 z-20 w-[min(360px,calc(100%-40px))] border border-bronze bg-stage-panel p-5 shadow-2xl"><p className="font-mono text-xs uppercase text-bronze">Presenter panel</p><p className="mt-4 text-sm text-stage-muted">Fase atual</p><p className="font-display text-xl uppercase">{phase.label}</p><p className="mt-4 text-sm text-stage-muted">Próximo</p><p>{phases[index + 1]?.label ?? "Fim da sessão"}</p><div className="mt-5 flex gap-2"><Button variant="stage" onClick={next}>Próximo</Button><Button variant="stageGhost" onClick={() => setPaused(!paused)}>{paused ? "Continuar" : "Pausar"}</Button></div></aside>}
+      {panel && <aside className="absolute right-5 top-20 z-20 w-[min(360px,calc(100%-40px))] border border-bronze bg-stage-panel p-5 shadow-2xl"><p className="font-mono text-xs uppercase text-bronze">Painel do Apresentador</p><p className="mt-4 text-sm text-stage-muted">Fase atual</p><p className="font-display text-xl uppercase">{phase.label}</p><p className="mt-4 text-sm text-stage-muted">Próximo</p><p>{phases[index + 1]?.label ?? "Fim da sessão"}</p><div className="mt-5 flex gap-2"><Button variant="stage" onClick={next}>Próximo</Button><Button variant="stageGhost" onClick={() => setPaused(!paused)}>{paused ? "Continuar" : "Pausar"}</Button></div></aside>}
     </main>
   );
 }
@@ -146,10 +146,10 @@ function EvidenceCardReveal({ title, body }: { title: string; body?: string }) {
         <div className="relative overflow-hidden border border-bronze/30 bg-stage-panel px-12 py-16 shadow-[0_0_40px_rgba(186,142,83,0.1)]">
           <div className="absolute top-0 left-0 w-full h-1 bg-bronze/50 shadow-[0_0_10px_2px_rgba(186,142,83,0.5)] animate-[pulse_1.5s_infinite]"></div>
           <div className="text-bronze mb-6 font-mono text-xs uppercase tracking-[0.3em] animate-pulse">
-            System analyzing testimony
+            Sistema analisando depoimento
           </div>
           <div className="text-3xl sm:text-5xl font-display uppercase tracking-widest text-foreground/80">
-            Processing Evidence
+            Processando Evidência
           </div>
         </div>
       </div>
@@ -159,7 +159,7 @@ function EvidenceCardReveal({ title, body }: { title: string; body?: string }) {
   return (
     <div className="animate-in fade-in zoom-in-95 duration-700 slide-in-from-bottom-4">
       <div className="mx-auto mb-7 w-fit border border-bronze bg-bronze/10 px-4 py-2 font-mono text-xs uppercase text-bronze shadow-[0_0_15px_rgba(186,142,83,0.3)]">
-        New Evidence Discovered
+        Nova Evidência Descoberta
       </div>
       <h1 className="font-display font-semibold uppercase leading-[0.95] text-4xl sm:text-7xl text-bronze">
         {title}

@@ -42,7 +42,7 @@ function CaseNotFound() {
         className="mt-4 font-display text-6xl uppercase"
         style={{ color: "var(--accusation)" }}
       >
-        CASE NOT FOUND
+        CASO NÃO ENCONTRADO
       </h1>
       <a
         href="/"

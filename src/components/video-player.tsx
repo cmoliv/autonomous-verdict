@@ -182,7 +182,7 @@ export function VideoPlayer({ src, className, onEnded }: VideoPlayerProps) {
           
           <div className="flex items-center gap-3">
             <span className="font-mono text-[9px] uppercase tracking-widest text-bronze/60 hidden sm:block border border-bronze/30 px-1.5 py-0.5 rounded-sm">
-              REC // CONFIDENTIAL
+              REC // CONFIDENCIAL
             </span>
             <button 
               onClick={toggleFullscreen}
