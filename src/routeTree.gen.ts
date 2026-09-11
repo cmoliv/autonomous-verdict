@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as CasesCaseIdRouteImport } from './routes/cases.$caseId'
 import { Route as AdminCasesCaseIdRouteImport } from './routes/admin.cases.$caseId'
 import { Route as AdminCasesNewRouteImport } from './routes/admin.cases.new'
@@ -25,6 +26,11 @@ const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
   getParentRoute: () => rootRouteImport,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const CasesCaseIdRoute = CasesCaseIdRouteImport.update({
   id: '/cases/$caseId',
@@ -51,14 +57,15 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/cases/$caseId': typeof CasesCaseIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/admin/cases/$caseId': typeof AdminCasesCaseIdRouteWithChildren
   '/admin/cases/new': typeof AdminCasesNewRoute
   '/admin/cases/$caseId/preview': typeof AdminCasesCaseIdPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/cases/$caseId': typeof CasesCaseIdRoute
+  '/admin': typeof AdminIndexRoute
   '/admin/cases/$caseId': typeof AdminCasesCaseIdRouteWithChildren
   '/admin/cases/new': typeof AdminCasesNewRoute
   '/admin/cases/$caseId/preview': typeof AdminCasesCaseIdPreviewRoute
@@ -68,6 +75,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/cases/$caseId': typeof CasesCaseIdRoute
+  '/admin/': typeof AdminIndexRoute
   '/admin/cases/$caseId': typeof AdminCasesCaseIdRouteWithChildren
   '/admin/cases/new': typeof AdminCasesNewRoute
   '/admin/cases/$caseId/preview': typeof AdminCasesCaseIdPreviewRoute
@@ -78,14 +86,15 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/cases/$caseId'
+    | '/admin/'
     | '/admin/cases/$caseId'
     | '/admin/cases/new'
     | '/admin/cases/$caseId/preview'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/cases/$caseId'
+    | '/admin'
     | '/admin/cases/$caseId'
     | '/admin/cases/new'
     | '/admin/cases/$caseId/preview'
@@ -94,6 +103,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/cases/$caseId'
+    | '/admin/'
     | '/admin/cases/$caseId'
     | '/admin/cases/new'
     | '/admin/cases/$caseId/preview'
@@ -120,6 +130,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/cases/$caseId': {
       id: '/cases/$caseId'
@@ -164,11 +181,13 @@ const AdminCasesCaseIdRouteWithChildren =
   AdminCasesCaseIdRoute._addFileChildren(AdminCasesCaseIdRouteChildren)
 
 interface AdminRouteChildren {
+  AdminIndexRoute: typeof AdminIndexRoute
   AdminCasesCaseIdRoute: typeof AdminCasesCaseIdRouteWithChildren
   AdminCasesNewRoute: typeof AdminCasesNewRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminIndexRoute: AdminIndexRoute,
   AdminCasesCaseIdRoute: AdminCasesCaseIdRouteWithChildren,
   AdminCasesNewRoute: AdminCasesNewRoute,
 }

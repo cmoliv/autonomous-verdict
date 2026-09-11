@@ -1,10 +1,23 @@
-import { FileLock2, Gauge, Stamp } from "lucide-react";
+import { useState } from "react";
+import { ArrowRight, FileLock2, Gauge, Stamp } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import type { PublicCase } from "@/lib/cases.functions";
+import { playSound } from "@/lib/audio";
 
 export function CaseFileCover({ caseData, onOpen }: { caseData: PublicCase; onOpen?: () => void }) {
+  const [isOpening, setIsOpening] = useState(false);
+
+  const handleOpen = () => {
+    setIsOpening(true);
+    playSound("flash", 0.7);
+    setTimeout(() => {
+      onOpen?.();
+    }, 600);
+  };
+
   return (
     <article className="file-cover relative mx-auto w-full max-w-4xl overflow-hidden border border-paper-edge bg-paper text-ink shadow-dossier">
+      {isOpening && <div className="absolute inset-0 z-50 animate-camera-flash pointer-events-none" />}
       <div className="paper-noise absolute inset-0 opacity-50" />
       <div className="relative grid min-h-[620px] grid-cols-[44px_1fr] sm:grid-cols-[64px_1fr]">
         <div className="border-r border-paper-edge bg-folder" />
@@ -30,7 +43,18 @@ export function CaseFileCover({ caseData, onOpen }: { caseData: PublicCase; onOp
             <span className="flex items-center gap-2"><Gauge className="size-4" /> Dificuldade: {"★".repeat(caseData.difficulty)}{"☆".repeat(5 - caseData.difficulty)}</span>
             <span>Jurisdição: tribunal acadêmico</span>
           </div>
-          {onOpen && <Button variant="file" size="xl" className="mx-auto mt-8" onClick={onOpen}>Abrir arquivo</Button>}
+          {onOpen && (
+            <Button 
+              variant="stage" 
+              size="xl" 
+              onClick={handleOpen} 
+              disabled={isOpening}
+              className="mt-12 w-full gap-3 bg-bronze text-stage-bg hover:bg-bronze-dim"
+            >
+              {isOpening ? "OPENING..." : "OPEN FILE"}
+              <ArrowRight className={`size-5 ${isOpening ? "translate-x-2 transition-transform" : ""}`} />
+            </Button>
+          )}
         </div>
       </div>
     </article>

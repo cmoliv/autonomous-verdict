@@ -128,19 +128,19 @@
 |---|------|-------------|-------------|
 | ~~P2.1~~ | ~~**Login admin (`/admin`)**~~ | — | ✅ Concluído |
 | ~~P2.2~~ | ~~**Dashboard admin**~~ | — | ✅ Concluído |
-| P2.3 | **Formulário de caso (`/admin/cases/new` e `/admin/cases/$caseId`)** — seções A-E completas | P2.2 | Alta |
-| P2.4 | **Reordenação (drag & drop)** de evidências e testemunhas | P2.3 | Média |
-| P2.5 | **Preview de rascunho** — `getCase` autenticado para previsualizar casos ainda não publicados | P2.3 | Baixa |
+| ~~P2.3~~ | ~~**Formulário de caso (`/admin/cases/new` e `/admin/cases/$caseId`)**~~ | ~~P2.2~~ | ✅ Concluído |
+| ~~P2.4~~ | ~~**Reordenação (drag & drop)** de evidências e testemunhas~~ | ~~P2.3~~ | ✅ Concluído |
+| ~~P2.5~~ | ~~**Preview de rascunho** — `getCase` autenticado para previsualizar casos ainda não publicados~~ | ~~P2.3~~ | ✅ Concluído |
 
 ### Prioridade 3 — Investigação Multimídia (MVP 3)
 
 | # | Item | Dependência | Complexidade |
 |---|------|-------------|-------------|
-| P3.1 | **Upload de arquivos** — imagens, documentos e vídeos para Supabase Storage (`case-files` bucket) | P2.4 | Média |
-| P3.2 | **Reprodução avançada de vídeos** — player para testemunhas com controles simplificados | P3.1 | Média |
-| P3.3 | **Evidence Card reveal** — animação de "PROCESSING EVIDENCE → NEW EVIDENCE DISCOVERED" após vídeo | P3.2 | Média |
-| P3.4 | **Animações cinematográficas** — abertura de arquivo, transições entre fases, objection | P1.3 | Alta |
-| P3.5 | **Efeitos sonoros** (opcional) | P3.4 | Baixa |
+| P3.1 | **Uso de arquivos locais estáticos** — usar a pasta `/public/media` para imagens e vídeos (sem upload externo) | P2.4 | Baixa |
+| ~~P3.2~~ | ~~**Reprodução avançada de vídeos** — player para testemunhas com controles simplificados~~ | ~~P3.1~~ | ✅ Concluído |
+| ~~P3.3~~ | ~~**Evidence Card reveal** — animação de "PROCESSING EVIDENCE → NEW EVIDENCE DISCOVERED" após vídeo~~ | ~~P3.2~~ | ✅ Concluído |
+| ~~P3.4~~ | ~~**Animações cinematográficas** — abertura de arquivo, transições entre fases, objection~~ | ~~P1.3~~ | ✅ Concluído |
+| ~~P3.5~~ | ~~**Efeitos sonoros** (opcional)~~ | ~~P3.4~~ | ✅ Concluído |
 
 ---
 
@@ -152,7 +152,7 @@
 | **Router**         | TanStack Router (file-based routing)                     |
 | **Banco de dados** | Supabase PostgreSQL                                      |
 | **Autenticação**   | Supabase Auth (email/senha)                              |
-| **Storage**        | Supabase Storage (bucket `case-files`)                   |
+| **Armazenamento de Mídia** | Pasta estática `/public/media` (simplificação para uso local)      |
 | **Styling**        | Tailwind CSS 4 + shadcn/ui + CSS custom properties       |
 | **UI Library**     | shadcn/ui (46 componentes pré-instalados)                |
 | **Data fetching**  | TanStack React Query + createServerFn (TanStack Start)   |
@@ -179,5 +179,6 @@
 
 | Data       | Sessão | Alterações                                                                 |
 | ---------- | ------ | -------------------------------------------------------------------------- |
+| 2026-09-11 | 3      | Conclusão de toda MVP 2 (Administração): P2.3 (Formulário complexo c/ Zod e relacionamentos), P2.4 (Drag & Drop com `@dnd-kit`), Mock de Autenticação local e P2.5 (Preview de rascunhos usando `getAdminCase`). Conclusão parcial da MVP 3 (Multimídia): P3.1 (Adoção de diretórios locais via FS `getMediaFiles` em dropdowns no form) e P3.2 (Criação de `VideoPlayer` com UI customizada e temática cinematic). |
 | 2026-09-11 | 0 (Lovable) | Setup inicial: banco Supabase (migrations), types, server functions, componentes `CaseFileCover` e `TrialExperience`, design system base, infraestrutura Supabase client/auth |
 | 2026-09-10 | 2      | Login admin (P2.1), dashboard com lista de casos, toggle status, duplicar, excluir (P2.2), hook `useAuth`, server functions admin com auth middleware, correção `validator` API, placeholders de rotas admin |

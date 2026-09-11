@@ -3,7 +3,9 @@ import { AlertTriangle, ArrowLeft, ArrowRight, Eye, FileText, Gavel, Maximize, P
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { CaseFileCover } from "@/components/case-file-cover";
+import { VideoPlayer } from "@/components/video-player";
 import type { CaseFile, Evidence, Witness } from "@/lib/cases.functions";
+import { playSound } from "@/lib/audio";
 
 type Phase = { kind: string; label: string; title: string; eyebrow: string; body?: string; evidence?: Evidence; witness?: Witness & { evidence_cards: CaseFile["witnesses"][number]["evidence_cards"] } };
 
@@ -53,6 +55,14 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
     return () => window.clearInterval(timer);
   }, [paused, seconds, phase.kind]);
 
+  useEffect(() => {
+    if (phase.kind === "objection") {
+      playSound("objection", 0.8);
+    } else if (phase.kind !== "cover") {
+      playSound("slide", 0.3);
+    }
+  }, [index, phase.kind]);
+
   const next = () => { setIndex((value) => Math.min(phases.length - 1, value + 1)); setSeconds(180); };
   const previous = () => { setIndex((value) => Math.max(0, value - 1)); setSeconds(180); };
   if (phase.kind === "cover") return <main className="trial-stage min-h-screen px-4 py-10 sm:px-8"><CaseFileCover caseData={data} onOpen={next} /></main>;
@@ -60,7 +70,7 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
   const isAccusation = phase.kind === "argument" || phase.kind === "objection";
   const isDefense = phase.kind === "argument-defense";
   return (
-    <main className={`trial-stage relative flex min-h-screen flex-col overflow-hidden ${isAccusation ? "stage-accusation" : isDefense ? "stage-defense" : ""}`}>
+    <main className={`trial-stage relative flex min-h-screen flex-col overflow-hidden ${isAccusation ? "stage-accusation" : isDefense ? "stage-defense" : ""} ${phase.kind === "objection" ? "animate-red-flash animate-shake-mild" : ""}`}>
       <header className="flex items-center justify-between border-b border-stage-line px-5 py-4 sm:px-8">
         <div className="flex items-center gap-3"><Scale className="size-5 text-bronze" /><div><p className="font-mono text-[10px] uppercase text-stage-muted">Tribunal dos Carros Autônomos</p><p className="font-display text-sm uppercase">{data.code} · {data.title}</p></div></div>
         <div className="flex items-center gap-2">
@@ -71,18 +81,33 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
       </header>
       <section className="relative flex flex-1 items-center justify-center px-5 py-12 sm:px-12">
         <div className="absolute left-6 top-6 font-mono text-[10px] uppercase tracking-[0.24em] text-stage-muted">{phase.eyebrow}</div>
-        <div className="w-full max-w-5xl text-center">
+        <div key={`phase-${index}`} className="w-full max-w-5xl text-center animate-in fade-in slide-in-from-bottom-8 duration-700 ease-out fill-mode-both">
           {phase.kind === "incident" && <FileText className="mx-auto mb-7 size-12 text-bronze" strokeWidth={1.25} />}
           {phase.kind === "decision" && <Eye className="mx-auto mb-7 size-12 text-bronze" strokeWidth={1.25} />}
           {phase.kind === "witness" && <Users className="mx-auto mb-7 size-12 text-bronze" strokeWidth={1.25} />}
           {phase.kind === "verdict" && <Gavel className="mx-auto mb-7 size-14 text-bronze" strokeWidth={1.25} />}
-          {phase.kind === "objection" && <AlertTriangle className="mx-auto mb-7 size-16 text-accusation" />}
-          {phase.kind === "card" && <div className="mx-auto mb-7 w-fit border border-bronze px-4 py-2 font-mono text-xs uppercase text-bronze">Processing evidence · Complete</div>}
-          <h1 className={`font-display font-semibold uppercase leading-[0.95] ${phase.kind === "objection" ? "text-6xl text-accusation sm:text-8xl" : "text-4xl sm:text-7xl"}`}>{phase.title}</h1>
-          {phase.body && <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-stage-muted sm:text-2xl">{phase.body}</p>}
+          {phase.kind === "objection" && <AlertTriangle className="mx-auto mb-7 size-20 text-accusation animate-in zoom-in-50 duration-300" />}
+          {phase.kind === "card" ? (
+            <EvidenceCardReveal title={phase.title} body={phase.body} />
+          ) : (
+            <>
+              <h1 className={`font-display font-semibold uppercase leading-[0.95] ${phase.kind === "objection" ? "text-7xl text-accusation sm:text-9xl animate-in zoom-in-75 duration-300" : "text-4xl sm:text-7xl"}`}>{phase.title}</h1>
+              {phase.body && <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-stage-muted sm:text-2xl">{phase.body}</p>}
+            </>
+          )}
           {phase.kind === "incident" && data.incident_data && <IncidentGrid data={data.incident_data} />}
           {phase.kind === "decision" && data.algorithm_justification && <details className="mx-auto mt-8 max-w-2xl border-t border-stage-line pt-5 text-left"><summary className="cursor-pointer font-mono text-xs uppercase text-bronze">Revelar justificativa conhecida</summary><p className="mt-4 text-stage-muted">{data.algorithm_justification}</p></details>}
-          {phase.kind === "witness" && phase.witness?.video_path && <video className="mx-auto mt-8 max-h-[42vh] w-full max-w-3xl" controls src={phase.witness.video_path} />}
+          {phase.kind === "witness" && phase.witness?.video_path && (
+            <VideoPlayer 
+              className="mx-auto mt-8 aspect-video w-full max-w-3xl sm:max-h-[50vh]" 
+              src={phase.witness.video_path} 
+              onEnded={() => {
+                if (phases[index + 1]?.kind === "card") {
+                  next();
+                }
+              }}
+            />
+          )}
           {phase.kind === "witness" && !phase.witness?.video_path && <div className="mx-auto mt-8 flex h-40 max-w-2xl items-center justify-center border border-stage-line bg-stage-panel"><Play className="size-10 text-bronze" /><span className="ml-3 font-mono text-xs uppercase text-stage-muted">Registro audiovisual não anexado</span></div>}
           {phase.kind === "score" && <Scoreboard scores={scores} points={data.points} onScore={(side) => setScores((old) => ({ ...old, [side]: old[side] + data.points }))} />}
         </div>
@@ -104,4 +129,48 @@ function IncidentGrid({ data }: { data: NonNullable<CaseFile["incident_data"]> }
 
 function Scoreboard({ scores, points, onScore }: { scores: { accusation: number; defense: number }; points: number; onScore: (side: "accusation" | "defense") => void }) {
   return <div className="mx-auto mt-10 grid max-w-3xl grid-cols-2 gap-px bg-stage-line"><button className="bg-stage-panel p-8 text-accusation" onClick={() => onScore("accusation")}><span className="font-mono text-xs uppercase">Acusação</span><strong className="mt-3 block font-display text-6xl">{scores.accusation}</strong><span className="text-xs">+ {points} {points === 1 ? "ponto" : "pontos"}</span></button><button className="bg-stage-panel p-8 text-defense" onClick={() => onScore("defense")}><span className="font-mono text-xs uppercase">Defesa</span><strong className="mt-3 block font-display text-6xl">{scores.defense}</strong><span className="text-xs">+ {points} {points === 1 ? "ponto" : "pontos"}</span></button></div>;
+}
+
+function EvidenceCardReveal({ title, body }: { title: string; body?: string }) {
+  const [status, setStatus] = useState<"processing" | "revealed">("processing");
+  
+  useEffect(() => {
+    setStatus("processing");
+    const timer = setTimeout(() => setStatus("revealed"), 3000);
+    return () => clearTimeout(timer);
+  }, [title, body]);
+
+  if (status === "processing") {
+    return (
+      <div className="flex flex-col items-center justify-center py-10 fade-in duration-300">
+        <div className="relative overflow-hidden border border-bronze/30 bg-stage-panel px-12 py-16 shadow-[0_0_40px_rgba(186,142,83,0.1)]">
+          <div className="absolute top-0 left-0 w-full h-1 bg-bronze/50 shadow-[0_0_10px_2px_rgba(186,142,83,0.5)] animate-[pulse_1.5s_infinite]"></div>
+          <div className="text-bronze mb-6 font-mono text-xs uppercase tracking-[0.3em] animate-pulse">
+            System analyzing testimony
+          </div>
+          <div className="text-3xl sm:text-5xl font-display uppercase tracking-widest text-foreground/80">
+            Processing Evidence
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="animate-in fade-in zoom-in-95 duration-700 slide-in-from-bottom-4">
+      <div className="mx-auto mb-7 w-fit border border-bronze bg-bronze/10 px-4 py-2 font-mono text-xs uppercase text-bronze shadow-[0_0_15px_rgba(186,142,83,0.3)]">
+        New Evidence Discovered
+      </div>
+      <h1 className="font-display font-semibold uppercase leading-[0.95] text-4xl sm:text-7xl text-bronze">
+        {title}
+      </h1>
+      {body && (
+        <div className="mx-auto mt-8 max-w-3xl border-l-4 border-bronze bg-stage-panel p-6 text-left shadow-[0_4px_20px_rgba(0,0,0,0.5)]">
+          <p className="text-lg leading-relaxed text-stage-muted sm:text-2xl font-mono">
+            "{body}"
+          </p>
+        </div>
+      )}
+    </div>
+  );
 }

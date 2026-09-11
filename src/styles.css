@@ -228,4 +228,42 @@
     pointer-events: none;
     z-index: 1;
   }
+
+  /* Cinematic Animations (P3.4) */
+  @keyframes camera-flash {
+    0% { background-color: transparent; }
+    10% { background-color: oklch(1 0 0); }
+    100% { background-color: transparent; }
+  }
+
+  @keyframes shake-mild {
+    0%, 100% { transform: translate(0, 0); }
+    10% { transform: translate(-2px, -2px); }
+    20% { transform: translate(2px, 1px); }
+    30% { transform: translate(-1px, 2px); }
+    40% { transform: translate(1px, -1px); }
+    50% { transform: translate(-2px, 1px); }
+    60% { transform: translate(2px, -2px); }
+    70% { transform: translate(-1px, -1px); }
+    80% { transform: translate(1px, 2px); }
+    90% { transform: translate(-2px, 0); }
+  }
+
+  @keyframes red-flash {
+    0% { background-color: var(--stage-bg); }
+    10% { background-color: var(--accusation); }
+    100% { background-color: var(--stage-bg); }
+  }
+
+  .animate-camera-flash {
+    animation: camera-flash 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+  }
+
+  .animate-shake-mild {
+    animation: shake-mild 0.4s ease-in-out;
+  }
+
+  .animate-red-flash {
+    animation: red-flash 0.6s ease-out;
+  }
 }

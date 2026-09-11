@@ -20,6 +20,8 @@ export const Route = createFileRoute("/cases/$caseId")({
       throw notFound();
     }
   },
+  staleTime: 0,
+  gcTime: 0,
   component: CasePage,
   notFoundComponent: CaseNotFound,
 });
