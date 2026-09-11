@@ -10,11 +10,20 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as CasesCaseIdRouteImport } from './routes/cases.$caseId'
+import { Route as AdminCasesCaseIdRouteImport } from './routes/admin.cases.$caseId'
+import { Route as AdminCasesNewRouteImport } from './routes/admin.cases.new'
+import { Route as AdminCasesCaseIdPreviewRouteImport } from './routes/admin.cases.$caseId.preview'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CasesCaseIdRoute = CasesCaseIdRouteImport.update({
@@ -22,30 +31,77 @@ const CasesCaseIdRoute = CasesCaseIdRouteImport.update({
   path: '/cases/$caseId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminCasesCaseIdRoute = AdminCasesCaseIdRouteImport.update({
+  id: '/cases/$caseId',
+  path: '/cases/$caseId',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCasesNewRoute = AdminCasesNewRouteImport.update({
+  id: '/cases/new',
+  path: '/cases/new',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminCasesCaseIdPreviewRoute = AdminCasesCaseIdPreviewRouteImport.update({
+  id: '/preview',
+  path: '/preview',
+  getParentRoute: () => AdminCasesCaseIdRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cases/$caseId': typeof CasesCaseIdRoute
+  '/admin/cases/$caseId': typeof AdminCasesCaseIdRouteWithChildren
+  '/admin/cases/new': typeof AdminCasesNewRoute
+  '/admin/cases/$caseId/preview': typeof AdminCasesCaseIdPreviewRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cases/$caseId': typeof CasesCaseIdRoute
+  '/admin/cases/$caseId': typeof AdminCasesCaseIdRouteWithChildren
+  '/admin/cases/new': typeof AdminCasesNewRoute
+  '/admin/cases/$caseId/preview': typeof AdminCasesCaseIdPreviewRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/cases/$caseId': typeof CasesCaseIdRoute
+  '/admin/cases/$caseId': typeof AdminCasesCaseIdRouteWithChildren
+  '/admin/cases/new': typeof AdminCasesNewRoute
+  '/admin/cases/$caseId/preview': typeof AdminCasesCaseIdPreviewRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/cases/$caseId'
+  fullPaths:
+    | '/'
+    | '/admin'
+    | '/cases/$caseId'
+    | '/admin/cases/$caseId'
+    | '/admin/cases/new'
+    | '/admin/cases/$caseId/preview'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/cases/$caseId'
-  id: '__root__' | '/' | '/cases/$caseId'
+  to:
+    | '/'
+    | '/admin'
+    | '/cases/$caseId'
+    | '/admin/cases/$caseId'
+    | '/admin/cases/new'
+    | '/admin/cases/$caseId/preview'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/cases/$caseId'
+    | '/admin/cases/$caseId'
+    | '/admin/cases/new'
+    | '/admin/cases/$caseId/preview'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   CasesCaseIdRoute: typeof CasesCaseIdRoute
 }
 
@@ -58,6 +114,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/cases/$caseId': {
       id: '/cases/$caseId'
       path: '/cases/$caseId'
@@ -65,11 +128,56 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CasesCaseIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/cases/$caseId': {
+      id: '/admin/cases/$caseId'
+      path: '/cases/$caseId'
+      fullPath: '/admin/cases/$caseId'
+      preLoaderRoute: typeof AdminCasesCaseIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cases/new': {
+      id: '/admin/cases/new'
+      path: '/cases/new'
+      fullPath: '/admin/cases/new'
+      preLoaderRoute: typeof AdminCasesNewRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/cases/$caseId/preview': {
+      id: '/admin/cases/$caseId/preview'
+      path: '/preview'
+      fullPath: '/admin/cases/$caseId/preview'
+      preLoaderRoute: typeof AdminCasesCaseIdPreviewRouteImport
+      parentRoute: typeof AdminCasesCaseIdRoute
+    }
   }
 }
 
+interface AdminCasesCaseIdRouteChildren {
+  AdminCasesCaseIdPreviewRoute: typeof AdminCasesCaseIdPreviewRoute
+}
+
+const AdminCasesCaseIdRouteChildren: AdminCasesCaseIdRouteChildren = {
+  AdminCasesCaseIdPreviewRoute: AdminCasesCaseIdPreviewRoute,
+}
+
+const AdminCasesCaseIdRouteWithChildren =
+  AdminCasesCaseIdRoute._addFileChildren(AdminCasesCaseIdRouteChildren)
+
+interface AdminRouteChildren {
+  AdminCasesCaseIdRoute: typeof AdminCasesCaseIdRouteWithChildren
+  AdminCasesNewRoute: typeof AdminCasesNewRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminCasesCaseIdRoute: AdminCasesCaseIdRouteWithChildren,
+  AdminCasesNewRoute: AdminCasesNewRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   CasesCaseIdRoute: CasesCaseIdRoute,
 }
 export const routeTree = rootRouteImport
