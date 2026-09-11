@@ -12,8 +12,25 @@ import {
   FileText,
   Loader2,
   AlertCircle,
+  Download,
+  Upload,
+  Copy as CopyIcon,
+  Check,
 } from "lucide-react";
-import { listAllCases, deleteCaseById, duplicateCaseById, toggleCaseStatus } from "@/lib/cases.functions";
+import { 
+  listAllCases, 
+  deleteCaseById, 
+  duplicateCaseById, 
+  toggleCaseStatus,
+  importCasesMerge
+} from "@/lib/cases.functions";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +41,7 @@ export const Route = createFileRoute("/admin/")({
 function AdminDashboard() {
   const queryClient = useQueryClient();
   const [confirmDelete, setConfirmDelete] = useState<string | null>(null);
+  const [copied, setCopied] = useState(false);
 
   const { data: cases = [], isLoading, error } = useQuery({
     queryKey: ["admin-cases"],
@@ -62,16 +80,79 @@ function AdminDashboard() {
       </div>
 
       {/* Cases table header */}
-      <div className="mb-4 flex items-center justify-between">
+      <div className="mb-4 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <h2 className="font-mono text-xs uppercase tracking-[0.25em] text-muted-foreground">
           Casos ({cases.length})
         </h2>
-        <Link to="/admin/cases/new">
-          <Button size="sm" className="gap-1.5">
-            <Plus className="size-3.5" />
-            Novo caso
+        <div className="flex items-center gap-2">
+          <input
+            type="file"
+            accept=".json"
+            id="import-cases"
+            className="hidden"
+            onChange={(e) => {
+              const file = e.target.files?.[0];
+              if (!file) return;
+              const reader = new FileReader();
+              reader.onload = (event) => {
+                const content = event.target?.result as string;
+                const success = importCasesMerge(content);
+                if (success) {
+                  queryClient.invalidateQueries({ queryKey: ["admin-cases"] });
+                  alert("Casos importados com sucesso!");
+                } else {
+                  alert("Erro ao importar casos. Verifique o formato do arquivo.");
+                }
+              };
+              reader.readAsText(file);
+              e.target.value = ""; // reset
+            }}
+          />
+          <Dialog onOpenChange={(open) => { if (!open) setCopied(false); }}>
+            <DialogTrigger asChild>
+              <Button size="sm" variant="outline" className="gap-1.5">
+                <Download className="size-3.5" />
+                Exportar JSON
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-2xl bg-paper">
+              <DialogHeader>
+                <DialogTitle className="font-mono text-xs uppercase tracking-widest text-ink">
+                  Exportar Casos (JSON)
+                </DialogTitle>
+              </DialogHeader>
+              <div className="relative mt-4">
+                <textarea
+                  readOnly
+                  className="h-[60vh] w-full resize-none rounded-sm border border-paper-edge bg-paper-dark p-4 font-mono text-xs text-ink focus:outline-none"
+                  value={JSON.stringify(cases, null, 2)}
+                />
+                <Button
+                  size="sm"
+                  className="absolute right-4 top-4 gap-1.5 bg-ink text-paper hover:bg-ink-muted"
+                  onClick={() => {
+                    navigator.clipboard.writeText(JSON.stringify(cases, null, 2));
+                    setCopied(true);
+                    setTimeout(() => setCopied(false), 2000);
+                  }}
+                >
+                  {copied ? <Check className="size-3.5" /> : <CopyIcon className="size-3.5" />}
+                  {copied ? "Copiado!" : "Copiar"}
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+          <Button size="sm" variant="outline" className="gap-1.5" onClick={() => document.getElementById("import-cases")?.click()}>
+            <Upload className="size-3.5" />
+            Importar
           </Button>
-        </Link>
+          <Link to="/admin/cases/new">
+            <Button size="sm" className="gap-1.5">
+              <Plus className="size-3.5" />
+              Novo caso
+            </Button>
+          </Link>
+        </div>
       </div>
 
       {/* Error state */}

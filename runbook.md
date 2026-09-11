@@ -179,6 +179,7 @@
 
 | Data       | Sessão | Alterações                                                                 |
 | ---------- | ------ | -------------------------------------------------------------------------- |
+| 2026-09-11 | 4      | Refatoração de Arquitetura (Offline-First): Desativação do SSR (SPA), remoção da dependência do Supabase. Todo o armazenamento movido para `localStorage`. Criação de auto-seed do caso padrão e UI de Exportar/Importar Casos no painel de administração. |
 | 2026-09-11 | 3      | Conclusão de toda MVP 2 (Administração): P2.3 (Formulário complexo c/ Zod e relacionamentos), P2.4 (Drag & Drop com `@dnd-kit`), Mock de Autenticação local e P2.5 (Preview de rascunhos usando `getAdminCase`). Conclusão parcial da MVP 3 (Multimídia): P3.1 (Adoção de diretórios locais via FS `getMediaFiles` em dropdowns no form) e P3.2 (Criação de `VideoPlayer` com UI customizada e temática cinematic). |
 | 2026-09-11 | 0 (Lovable) | Setup inicial: banco Supabase (migrations), types, server functions, componentes `CaseFileCover` e `TrialExperience`, design system base, infraestrutura Supabase client/auth |
 | 2026-09-10 | 2      | Login admin (P2.1), dashboard com lista de casos, toggle status, duplicar, excluir (P2.2), hook `useAuth`, server functions admin com auth middleware, correção `validator` API, placeholders de rotas admin |

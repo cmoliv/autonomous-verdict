@@ -2,7 +2,9 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { listPublishedCases } from "@/lib/cases.functions";
 import { FileLock2, Scale, Stamp } from "lucide-react";
 
-export const Route = createFileRoute("/")(({
+import { useQuery } from "@tanstack/react-query";
+
+export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Tribunal dos Carros Autônomos — Investigation Files" },
@@ -13,12 +15,14 @@ export const Route = createFileRoute("/")(({
       },
     ],
   }),
-  loader: () => listPublishedCases(),
   component: HomePage,
-}));
+});
 
 function HomePage() {
-  const cases = Route.useLoaderData();
+  const { data: cases = [] } = useQuery({
+    queryKey: ["published-cases"],
+    queryFn: () => listPublishedCases(),
+  });
 
   return (
     <main className="min-h-screen" style={{ backgroundColor: "var(--paper)" }}>
