@@ -34,8 +34,8 @@ function AdminPage() {
 // ─── Login Screen ─────────────────────────────────────────────────────────────
 
 function LoginScreen() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [email, setEmail] = useState("admin@email.com");
+  const [password, setPassword] = useState("adminpassword123");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
