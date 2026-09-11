@@ -1,4 +1,4 @@
-export type SoundEffect = "flash" | "objection" | "slide";
+export type SoundEffect = "flash" | "objection" | "slide" | "alert";
 
 // Pre-load audio elements if in browser
 const audioCache = new Map<SoundEffect, HTMLAudioElement>();

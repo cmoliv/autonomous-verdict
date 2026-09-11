@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, ArrowRight, Eye, FileText, Gavel, Maximize, Pause, Play, Scale, Timer, Users } from "lucide-react";
+import { AlertTriangle, ArrowLeft, ArrowRight, Eye, FileText, Gavel, Maximize, Pause, Play, Scale, Timer, Users, ZoomIn } from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
 import { CaseFileCover } from "@/components/case-file-cover";
 import { VideoPlayer } from "@/components/video-player";
 import type { CaseFile, Evidence, Witness } from "@/lib/cases.functions";
@@ -23,8 +24,8 @@ function buildPhases(data: CaseFile): Phase[] {
     witness.evidence_cards.forEach((card) => phases.push({ kind: "card", label: "Descoberta", title: card.title, eyebrow: "Nova evidência descoberta", body: card.content, witness }));
   });
   phases.push(
-    { kind: "objection", label: "Protesto", title: "PROTESTO!", eyebrow: "Contestação judicial" },
-    { kind: "verdict", label: "Veredito", title: "O tribunal deve decidir", eyebrow: "O veredito", body: data.central_question },
+    { kind: "objection", label: "Embate", title: "EMBATE!", eyebrow: "Argumentação livre" },
+    { kind: "verdict", label: "Veredito", title: "O juiz deve decidir", eyebrow: "O veredito", body: data.central_question },
     { kind: "score", label: "Placar", title: "Resultado do julgamento", eyebrow: "Atualização de Placar" },
   );
   return phases;
@@ -54,6 +55,12 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
     const timer = window.setInterval(() => setSeconds((value) => Math.max(0, value - 1)), 1000);
     return () => window.clearInterval(timer);
   }, [paused, seconds, phase.kind]);
+
+  useEffect(() => {
+    if (seconds === 0 && phase.kind !== "cover") {
+      playSound("alert", 0.6);
+    }
+  }, [seconds, phase.kind]);
 
   useEffect(() => {
     if (phase.kind === "objection") {
@@ -92,7 +99,42 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
           ) : (
             <>
               <h1 className={`font-display font-semibold uppercase leading-[0.95] ${phase.kind === "objection" ? "text-7xl text-accusation sm:text-9xl animate-in zoom-in-75 duration-300" : "text-4xl sm:text-7xl"}`}>{phase.title}</h1>
-              {phase.body && <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-stage-muted sm:text-2xl">{phase.body}</p>}
+              
+              {phase.evidence?.image_path && (
+                <div className="mx-auto mt-8 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button className="group relative overflow-hidden border border-bronze/30 bg-stage-panel p-2 transition-all hover:border-bronze hover:shadow-[0_0_20px_rgba(186,142,83,0.2)]">
+                        <img src={phase.evidence.image_path} alt={phase.title} className="max-h-56 object-contain transition-transform group-hover:scale-105" />
+                        <div className="absolute inset-0 flex items-center justify-center bg-black/40 opacity-0 transition-opacity group-hover:opacity-100">
+                          <ZoomIn className="size-10 text-white" />
+                        </div>
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="max-w-[95vw] w-fit border-none bg-transparent p-0 shadow-none sm:max-w-6xl">
+                      <img src={phase.evidence.image_path} alt={phase.title} className="max-h-[90vh] w-auto object-contain" />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              )}
+
+              {phase.evidence?.document_path && (
+                <div className="mx-auto mt-8 flex justify-center animate-in fade-in slide-in-from-bottom-4 duration-700 delay-150 fill-mode-both">
+                  <Dialog>
+                    <DialogTrigger asChild>
+                      <button className="flex items-center gap-3 border border-bronze/30 bg-stage-panel px-8 py-5 text-bronze transition-all hover:bg-bronze hover:text-stage-bg hover:shadow-[0_0_20px_rgba(186,142,83,0.3)]">
+                        <FileText className="size-6" />
+                        <span className="font-mono text-sm uppercase tracking-widest">Visualizar Documento</span>
+                      </button>
+                    </DialogTrigger>
+                    <DialogContent className="h-[85vh] max-w-5xl bg-stage-bg p-0 border-bronze/30 sm:h-[90vh]">
+                      <iframe src={phase.evidence.document_path} className="h-full w-full border-0" title={phase.title} />
+                    </DialogContent>
+                  </Dialog>
+                </div>
+              )}
+
+              {phase.body && <p className="mx-auto mt-8 max-w-3xl text-lg leading-relaxed text-stage-muted sm:text-2xl animate-in fade-in duration-700 delay-300 fill-mode-both">{phase.body}</p>}
             </>
           )}
           {phase.kind === "incident" && data.incident_data && <IncidentGrid data={data.incident_data} />}
