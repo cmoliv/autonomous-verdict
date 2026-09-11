@@ -8,8 +8,8 @@
 
 | Métrica               | Valor                          |
 | --------------------- | ------------------------------ |
-| **Conclusão estimada** | ~35%                           |
-| **Fase atual**         | MVP 1 — Tribunal Público (funcional) |
+| **Conclusão estimada** | ~50%                           |
+| **Fase atual**         | MVP 2 — Administração (parcial) |
 | **Stack**              | TanStack Start + React 19 + Supabase + Tailwind CSS 4 |
 | **Framework**          | Vite 8 + TanStack Router       |
 
@@ -84,6 +84,29 @@
 
 **Arquivo:** `src/routes/cases.$caseId.tsx`
 
+### 8. Hook de autenticação ✅ (Sessão 2)
+- `useAuth()` — estado reativo de sessão Supabase (loading / authenticated / unauthenticated)
+
+**Arquivo:** `src/hooks/use-auth.ts`
+
+### 9. Login Admin (`/admin`) ✅ (Sessão 2)
+- Tela de login com visual documental (papel envelhecido, fonte mono, botão tinta/papel)
+- Email/senha via Supabase Auth (`signInWithPassword`)
+- Mensagem de erro tipada, loading state, link de retorno
+
+**Arquivo:** `src/routes/admin.tsx`
+
+### 10. Dashboard Admin ✅ (Sessão 2)
+- Exibido após autenticação (sem reload manual)
+- Estatísticas: total, publicados, rascunhos
+- Tabela de casos com: número, código, título, dificuldade, contagem de evidências e testemunhas, badge de status clicável (toggle publicar/despublicar), ações
+- Ações: Visualizar, Editar, Duplicar (com todos os relacionamentos), Excluir (com confirmação inline)
+- Botão de logout; link para tribunal público
+- Server functions admin protegidas pelo `requireSupabaseAuth` middleware
+- Placeholder routes para `/admin/cases/new`, `/admin/cases/$caseId`, `/admin/cases/$caseId/preview`
+
+**Arquivo:** `src/routes/admin.tsx`, `src/routes/admin.cases.*.tsx`
+
 ---
 
 ## Funcionalidades Pendentes 📋
@@ -103,14 +126,11 @@
 
 | # | Item | Dependência | Complexidade |
 |---|------|-------------|-------------|
-| P2.1 | **Login admin (`/admin`)** — tela de autenticação email/senha via Supabase Auth | Nenhuma | Média |
-| P2.2 | **Dashboard admin (`/admin`)** — contagem de casos, sessão atual, atalhos | P2.1 | Baixa |
-| P2.3 | **Lista de casos (`/admin/cases`)** — tabela com status, dificuldade, contagens, ações (editar, duplicar, visualizar, excluir) | P2.1 | Média |
-| P2.4 | **Formulário de caso (`/admin/cases/new` e `/admin/cases/$caseId`)** — seções A-E completas (identificação, contexto, decisão, dados, evidências, testemunhas) | P2.3 | Alta |
-| P2.5 | **Duplicação de caso** — operação atômica (caso + evidências + testemunhas + cards) | P2.4 | Média |
-| P2.6 | **Reordenação (drag & drop)** de evidências e testemunhas | P2.4 | Média |
-| P2.7 | **Preview (`/admin/cases/$caseId/preview`)** — mesma tela do tribunal sem expor controles admin | P2.4 | Baixa |
-| P2.8 | **Publicação/Rascunho** — toggle de status do caso | P2.3 | Baixa |
+| ~~P2.1~~ | ~~**Login admin (`/admin`)**~~ | — | ✅ Concluído |
+| ~~P2.2~~ | ~~**Dashboard admin**~~ | — | ✅ Concluído |
+| P2.3 | **Formulário de caso (`/admin/cases/new` e `/admin/cases/$caseId`)** — seções A-E completas | P2.2 | Alta |
+| P2.4 | **Reordenação (drag & drop)** de evidências e testemunhas | P2.3 | Média |
+| P2.5 | **Preview de rascunho** — `getCase` autenticado para previsualizar casos ainda não publicados | P2.3 | Baixa |
 
 ### Prioridade 3 — Investigação Multimídia (MVP 3)
 
@@ -160,4 +180,4 @@
 | Data       | Sessão | Alterações                                                                 |
 | ---------- | ------ | -------------------------------------------------------------------------- |
 | 2026-09-11 | 0 (Lovable) | Setup inicial: banco Supabase (migrations), types, server functions, componentes `CaseFileCover` e `TrialExperience`, design system base, infraestrutura Supabase client/auth |
-| 2026-09-10 | 1      | Auditoria do projeto, criação do `runbook.md`, implementação do design system (P1.3), página inicial (P1.1), rota `/cases/$caseId` (P1.2), variantes do Button, correção dos meta tags do root. App funcional end-to-end: home → Investigation File → julgamento completo |
+| 2026-09-10 | 2      | Login admin (P2.1), dashboard com lista de casos, toggle status, duplicar, excluir (P2.2), hook `useAuth`, server functions admin com auth middleware, correção `validator` API, placeholders de rotas admin |
