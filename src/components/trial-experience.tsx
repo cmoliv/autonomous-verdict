@@ -1,5 +1,20 @@
 import { useEffect, useMemo, useState } from "react";
-import { AlertTriangle, ArrowLeft, ArrowRight, Eye, FileText, Gavel, Maximize, Pause, Play, Scale, Timer, Users, ZoomIn } from "lucide-react";
+import {
+  AlertTriangle,
+  ArrowLeft,
+  ArrowRight,
+  Eye,
+  FileText,
+  Gavel,
+  Maximize,
+  Pause,
+  Play,
+  RotateCcw,
+  Scale,
+  Timer,
+  Users,
+  ZoomIn,
+} from "lucide-react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
@@ -179,7 +194,7 @@ export function TrialExperience({ data, preview = false }: { data: CaseFile; pre
       </section>
       <footer className="flex items-center justify-between border-t border-stage-line px-4 py-4 sm:px-8">
         <Button variant="stageGhost" onClick={previous} disabled={index === 0}><ArrowLeft /> Anterior</Button>
-        <div className="flex items-center gap-2 font-mono text-sm text-stage-muted"><Timer className="size-4" />{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}<Button variant="stageGhost" size="icon" aria-label={paused ? "Continuar" : "Pausar"} onClick={() => setPaused(!paused)}>{paused ? <Play /> : <Pause />}</Button></div>
+        <div className="flex items-center gap-2 font-mono text-sm text-stage-muted"><Timer className="size-4" />{String(Math.floor(seconds / 60)).padStart(2, "0")}:{String(seconds % 60).padStart(2, "0")}<Button variant="stageGhost" size="icon" aria-label={paused ? "Continuar" : "Pausar"} onClick={() => setPaused(!paused)}>{paused ? <Play /> : <Pause />}</Button><Button variant="stageGhost" size="icon" aria-label="Reiniciar" onClick={() => setSeconds(180)}><RotateCcw /></Button></div>
         {index === phases.length - 1 ? (
           <Button variant="stage" onClick={() => {
             const finished = JSON.parse(localStorage.getItem("autonomous_verdict_finished_cases") || "[]");
@@ -266,14 +281,13 @@ function IncidentGrid({ data }: { data: NonNullable<CaseFile["incident_data"]> }
     ["Pedestres", data.pedestrians], 
     ["Tempo para decisão", data.decision_time != null ? `${data.decision_time}s` : null], 
     ["Velocidade", data.vehicle_speed != null ? `${data.vehicle_speed} km/h` : null], 
-    ...(data.survival_probability != null ? [["Sobrevivência (Legado)", `${data.survival_probability}%`]] : []),
     ["Condição", data.weather]
   ];
   return (
     <div className="mx-auto mt-10 max-w-4xl">
-      <div className="grid grid-cols-2 border-l border-t border-stage-line sm:grid-cols-3">
+      <div className="flex flex-wrap border-l border-t border-stage-line">
         {rows.filter(([, value]) => value != null).map(([label, value]) => (
-          <div key={String(label)} className="border-b border-r border-stage-line p-4 text-left">
+          <div key={String(label)} className="flex-1 basis-[120px] sm:basis-[150px] border-b border-r border-stage-line p-4 text-left">
             <p className="font-mono text-[10px] uppercase text-stage-muted">{label}</p>
             <p className="mt-1 font-display text-xl uppercase">{value}</p>
           </div>
