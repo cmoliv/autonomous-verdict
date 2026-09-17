@@ -1,0 +1,641 @@
+[
+  {
+    "id": "667172b6-c5fa-4ca7-ac26-39aca47eb4d7",
+    "number": 1,
+    "code": "AV-331",
+    "title": "O DILEMA DOS 5 CONTRA 1",
+    "subtitle": "Salvar cinco justifica sacrificar um?",
+    "difficulty": 1,
+    "is_final": false,
+    "points": 1,
+    "status": "published",
+    "sort_order": 1,
+    "summary": "O veículo autônomo desviou de cinco pedestres e direcionou sua trajetória contra um único pedestre, evitando uma colisão múltipla.",
+    "description": "Um veículo Titan X, operando em modo 100% autônomo, trafegava por uma avenida urbana quando identificou cinco pedestres atravessando sua trajetória. A frenagem de emergência não seria suficiente para evitar a colisão. O sistema identificou uma rota alternativa que evitaria os cinco pedestres, mas levaria o veículo em direção a um único pedestre localizado na calçada. O algoritmo realizou a manobra em 1,2 segundo e atingiu o pedestre isolado. Segundo as estimativas do sistema, continuar em frente apresentava 90% de probabilidade de resultar na morte de pelo menos quatro dos cinco pedestres, enquanto o desvio apresentava 85% de probabilidade de resultar na morte do pedestre isolado.",
+    "central_question": "O veículo agiu corretamente ao sacrificar uma pessoa para maximizar o número de vidas preservadas?",
+    "algorithm_title": "Priorização Utilitarista de Danos Globais",
+    "algorithm_description": "O algoritmo desviou deliberadamente a trajetória do veículo para reduzir o número esperado de vítimas humanas no acidente.",
+    "algorithm_justification": "Diretriz de contingência 4.2.1: em uma colisão inevitável, o sistema deve selecionar a trajetória que minimize o número esperado de fatalidades, independentemente da posição das pessoas em relação ao veículo.",
+    "reveal_justification": true,
+    "incident_data": {
+      "passengers": 1,
+      "pedestrians": 6,
+      "decision_time": 1.2,
+      "vehicle_speed": 48,
+      "survival_probability": 10,
+      "survival_probabilities": [
+        {
+          "decision": "continuar",
+          "probability": "10% para cada pedestre atingido"
+        },
+        {
+          "decision": "desviar",
+          "probability": "15% para o pedestre isolado"
+        }
+      ],
+      "location": "Avenida urbana, cruzamento movimentado",
+      "weather": "Ensolarado",
+      "visibility": "Excelente"
+    },
+    "evidence": [
+      {
+        "id": "555a1f55-6d35-4cd6-a4b3-129bcee07fae",
+        "number": 1,
+        "title": "Tempo de reação",
+        "description": "O sistema possuía apenas 1,2 segundo para tomar uma decisão. Não havia tempo suficiente para intervenção humana.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 1
+      },
+      {
+        "id": "c8929834-69e7-4294-a895-13f98a08fd62",
+        "number": 2,
+        "title": "Estimativas probabilísticas",
+        "description": "Continuar em frente apresentava 90% de probabilidade de produzir múltiplas fatalidades. Desviar apresentava 85% de probabilidade de atingir fatalmente o pedestre isolado.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 2
+      },
+      {
+        "id": "ee7cfafb-6bdc-4c7a-8446-a44b87e25be3",
+        "number": 3,
+        "title": "Diretriz interna",
+        "description": "O fabricante determina que o sistema deve minimizar o número esperado de mortes em acidentes inevitáveis.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "image_path": "/media/evidence/evidence3_caso1.jpeg",
+        "sort_order": 3
+      },
+      {
+        "id": "b0757db0-7505-4baf-ab3e-68b40a6ab558",
+        "number": 4,
+        "title": "Ausência de diferenciação",
+        "description": "O algoritmo não recebeu informações sobre idade, profissão, condição física ou qualquer outra característica dos indivíduos.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 4
+      },
+      {
+        "id": "b4aa4ac5-045a-47e8-be0e-e526fb5ed167",
+        "number": 5,
+        "title": "O pedestre isolado estava na calçada",
+        "description": "A pessoa atingida não estava envolvida na situação inicial de risco e não havia contribuído para o acidente.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "image_path": "/media/evidence/evidence5_caso1.jpeg",
+        "sort_order": 5
+      }
+    ],
+    "witnesses": [
+      {
+        "id": "fe6df9de-5bf0-493c-a991-e3d1da069ad3",
+        "number": 1,
+        "name": "Carlos Mendes",
+        "role": "Comerciante",
+        "mediator_intro": "Comerciante local",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha1_caso1.mp4",
+        "sort_order": 1,
+        "evidence_cards": [
+          {
+            "id": "e9c0ab16-479f-4e27-829d-2539df9bafde",
+            "title": "Testemunha",
+            "content": "Carlos estava a aproximadamente 30 metros do cruzamento onde ocorreu o acidente. Alega que os pedestres atravessaram com o sinal fechado para eles.\n",
+            "source": "Repositório Git Titan X",
+            "type": "system_data",
+            "reliability": "low",
+            "auto_reveal": true,
+            "sort_order": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "22df61f7-7e19-45a8-952c-86f2aed05a0e",
+    "number": 2,
+    "code": "AV-214",
+    "title": "PASSAGEIROS CONTRA PEDESTRES",
+    "subtitle": "Uma vida vale mais quando está dentro do carro?",
+    "difficulty": 2,
+    "is_final": false,
+    "points": 1,
+    "status": "published",
+    "sort_order": 1,
+    "summary": "O veículo priorizou a sobrevivência de três passageiros e manteve sua trajetória, colocando cinco pedestres em risco de morte.",
+    "description": "Um robotáxi Titan X transportava três passageiros quando identificou cinco pedestres atravessando irregularmente uma interseção. O sistema calculou que uma frenagem não seria suficiente para evitar o atropelamento. Uma manobra evasiva permitiria evitar os pedestres, mas faria o veículo colidir contra uma barreira de concreto, apresentando elevado risco de morte para os três passageiros. O algoritmo optou por manter a trajetória e proteger os ocupantes do veículo, resultando na morte dos cinco pedestres.",
+    "central_question": "O veículo deve priorizar as pessoas que estão dentro dele ou tratar passageiros e pedestres como moralmente equivalentes?",
+    "algorithm_title": "Prioridade de Segurança dos Ocupantes",
+    "algorithm_description": "O algoritmo manteve a trajetória para evitar uma manobra que apresentava alto risco de morte para os passageiros.",
+    "algorithm_justification": "Diretriz operacional 2.7: durante o transporte autônomo, o sistema deve maximizar a proteção dos ocupantes, desde que isso não implique uma violação deliberada de uma regra de segurança crítica.",
+    "reveal_justification": true,
+    "incident_data": {
+      "passengers": 3,
+      "pedestrians": 5,
+      "decision_time": 0.9,
+      "vehicle_speed": 52,
+      "survival_probability": 8,
+      "survival_probabilities": [
+        {
+          "decision": "Manter trajetória",
+          "probability": "8% para os pedestres"
+        },
+        {
+          "decision": "Desviar",
+          "probability": "25% para os passageiros"
+        }
+      ],
+      "location": "Interseção urbana",
+      "weather": "Nublado",
+      "visibility": "Boa"
+    },
+    "evidence": [
+      {
+        "id": "3579a168-9890-451f-833e-bc40e1577939",
+        "number": 1,
+        "title": "Contrato de serviço",
+        "description": "O serviço de robotáxi afirma que a segurança dos passageiros é uma prioridade operacional.",
+        "category": "document",
+        "reveal_phase": "intro",
+        "image_path": "/media/evidence/evidence1_caso2.jpeg",
+        "sort_order": 1
+      },
+      {
+        "id": "288a38e8-0a9c-4722-b2a1-a6f8c565a2a8",
+        "number": 2,
+        "title": "Travessia irregular",
+        "description": "Os cinco pedestres atravessavam aproximadamente 20 metros distante da faixa de pedestres.",
+        "category": "legislation",
+        "reveal_phase": "intro",
+        "image_path": "/media/evidence/evidence2_caso2.jpeg",
+        "sort_order": 2
+      },
+      {
+        "id": "2dccfc07-cb08-4d07-b108-6308e4ea38da",
+        "number": 3,
+        "title": "Passageiros sem contribuição para o incidente",
+        "description": "Os três ocupantes estavam utilizando o veículo normalmente e não contribuíram para a situação.",
+        "category": "testimony",
+        "reveal_phase": "intro",
+        "sort_order": 3
+      },
+      {
+        "id": "95cf1714-b37e-413d-b178-cd27eb8b4d27",
+        "number": 4,
+        "title": "Serviço pago",
+        "description": "Os passageiros haviam contratado o transporte justamente para serem conduzidos autonomamente em segurança.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 4
+      },
+      {
+        "id": "1467012d-70b7-4420-a932-0fbaa7311923",
+        "number": 5,
+        "title": "Política pública alternativa",
+        "description": "Uma proposta de regulamentação determina que sistemas autônomos devem tratar vidas humanas de maneira igual, independentemente de a pessoa estar dentro ou fora do veículo.",
+        "category": "legislation",
+        "reveal_phase": "intro",
+        "sort_order": 5
+      },
+      {
+        "id": "8ba44b85-18df-469a-be1c-e746481636be",
+        "number": 6,
+        "title": "Infração não equivale a consentimento",
+        "description": "Não existe nenhuma legislação autorizando um veículo autônomo a considerar uma infração de trânsito como autorização para causar deliberadamente a morte de um pedestre.",
+        "category": "legislation",
+        "reveal_phase": "intro",
+        "sort_order": 6
+      }
+    ],
+    "witnesses": [
+      {
+        "id": "6b81bb22-9047-4eaf-ab6e-2ded255b4392",
+        "number": 1,
+        "name": "Ana Souza",
+        "role": "Motorista de outro veículo que passava na hora",
+        "mediator_intro": "Motorista de outro veículo que passava na hora",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha1_caso2.mp4",
+        "sort_order": 1,
+        "evidence_cards": [
+          {
+            "id": "190029f6-ca42-451c-86e3-e8a28d56172e",
+            "title": "Informação adicional",
+            "content": "Ana estava dirigindo ao celular no momento do acidente.",
+            "source": "Repositório Git Titan X",
+            "type": "testimony",
+            "reliability": "low",
+            "auto_reveal": true,
+            "sort_order": 1
+          }
+        ]
+      },
+      {
+        "id": "8f453170-afa3-44e1-875f-167e48c118da",
+        "number": 2,
+        "name": "João Ribeiro",
+        "role": "Entregador que passava no local",
+        "mediator_intro": "Entregador que passava no local",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha2_caso2.mp4",
+        "sort_order": 2,
+        "evidence_cards": [
+          {
+            "id": "d7b67974-c2e5-479a-b127-c28a1f5ecf35",
+            "title": "Possível conflito",
+            "content": "João confirma a infração dos pedestres, mas também questiona a velocidade do veículo.",
+            "source": "Repositório Git Titan X",
+            "type": "testimony",
+            "reliability": "high",
+            "auto_reveal": true,
+            "sort_order": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "d9d865ee-041f-4bb8-bfd3-cdba50b0878a",
+    "number": 3,
+    "code": "AV-067",
+    "title": "O ERRO DO ALGORITMO",
+    "subtitle": "Quando a máquina erra, quem responde?",
+    "difficulty": 4,
+    "is_final": false,
+    "points": 1,
+    "status": "published",
+    "sort_order": 1,
+    "summary": "Um sensor defeituoso forneceu informações incorretas ao veículo, que tomou uma decisão aparentemente racional, mas posteriormente considerada evitável.",
+    "description": "Um veículo Titan X trafegava a 60 km/h quando identificou um pedestre em sua trajetória. O sistema calculou duas alternativas: realizar uma frenagem de emergência ou desviar para uma faixa onde trafegava outro veículo com quatro ocupantes. Com base nos dados disponíveis naquele momento, o algoritmo concluiu que a frenagem apresentava maior probabilidade de causar uma fatalidade individual do que o desvio de causar múltiplas fatalidades. O sistema optou por frear e o pedestre morreu. Após o acidente, investigadores descobriram que um sensor apresentava erro de leitura. Com os dados corretos, a frenagem teria apresentado probabilidade significativamente maior de sucesso.",
+    "central_question": "Se o algoritmo tomou a melhor decisão possível com informações incorretas, quem deve ser responsabilizado pelo resultado?",
+    "algorithm_title": "Frenagem de Emergência Baseada em Risco",
+    "algorithm_description": "O sistema selecionou a frenagem porque os dados disponíveis indicavam que essa alternativa apresentava menor risco esperado de fatalidades.",
+    "algorithm_justification": "O módulo de contingência utiliza estimativas probabilísticas baseadas em distância, velocidade, trajetória e confiança dos sensores. Quando uma alternativa apresenta menor risco esperado de fatalidade, ela deve ser priorizada.",
+    "reveal_justification": true,
+    "incident_data": {
+      "passengers": 1,
+      "pedestrians": 1,
+      "decision_time": 0.8,
+      "vehicle_speed": 60,
+      "survival_probability": 0,
+      "survival_probabilities": [
+        {
+          "decision": "Frear, dados registrados",
+          "probability": "30% para o pedestre"
+        },
+        {
+          "decision": "Desviar, dados registrados",
+          "probability": "20% por ocupante de ambos os veículos"
+        },
+        {
+          "decision": "Frear, dados corrigidos",
+          "probability": "75%"
+        }
+      ],
+      "location": "Rodovia urbana",
+      "weather": "Chuvoso",
+      "visibility": "Moderada"
+    },
+    "evidence": [
+      {
+        "id": "28ae3cb3-f6c9-4e5d-aae3-c6646f2d2a6f",
+        "number": 1,
+        "title": "Registro do sistema",
+        "description": "O algoritmo registrou a frenagem como a alternativa de menor risco no momento da decisão.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "image_path": "/media/evidence/evidence1_caso3.jpeg",
+        "sort_order": 1
+      },
+      {
+        "id": "c373b5fb-d2ac-40dc-b5c4-728f73cd42f6",
+        "number": 2,
+        "title": "Sensor defeituoso",
+        "description": "Um sensor apresentou uma leitura de distância incorreta.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 2
+      },
+      {
+        "id": "dc2d1d9b-292f-4961-9da6-0f71ab6be803",
+        "number": 3,
+        "title": "Dados corrigidos",
+        "description": "A reconstrução do acidente mostrou que, com os dados reais, a frenagem possuía 75% de probabilidade de preservar a vida do pedestre.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 3
+      },
+      {
+        "id": "a62254fe-24c6-4c92-b4c7-f2a805540b21",
+        "number": 4,
+        "title": "Conhecimento prévio da empresa",
+        "description": "Relatórios internos indicavam que aquele lote de sensores apresentava uma taxa de falha acima da especificação.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 4
+      },
+      {
+        "id": "99d4df2a-8072-4176-a6a7-d0b5873b4d81",
+        "number": 5,
+        "title": "Programadores",
+        "description": "Os desenvolvedores implementaram corretamente as especificações fornecidas pela empresa.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 5
+      },
+      {
+        "id": "403f37a0-93bd-41dd-9dd4-c2a6124e0b90",
+        "number": 6,
+        "title": "Proprietário",
+        "description": "O proprietário não tinha conhecimento do defeito.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "image_path": "/media/evidence/evidence6_caso3.jpeg",
+        "sort_order": 6
+      },
+      {
+        "id": "04d4ae18-ad79-4694-94bb-f60bf2982a99",
+        "number": 7,
+        "title": "Explicabilidade limitada",
+        "description": "O módulo de decisão utiliza modelos probabilísticos e não consegue fornecer uma explicação completa para todas as estimativas produzidas.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 7
+      }
+    ],
+    "witnesses": [
+      {
+        "id": "e887b5b5-f320-45fb-8261-231a8072cb38",
+        "number": 1,
+        "name": "Lucas Almeida",
+        "role": "Passageiro",
+        "mediator_intro": "Passageiro",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha1_caso3.mp4",
+        "sort_order": 1,
+        "evidence_cards": [
+          {
+            "id": "0ffd8f06-ce8d-4a8c-a25c-035356b7d36c",
+            "title": "Informação adicional",
+            "content": "Lucas estava olhando para o painel no momento do acidente.",
+            "source": "Repositório Git Titan X",
+            "type": "statement",
+            "reliability": "medium",
+            "auto_reveal": true,
+            "sort_order": 1
+          }
+        ]
+      },
+      {
+        "id": "4a99bea0-cb01-4b1f-a014-9625b138d30f",
+        "number": 2,
+        "name": "Marina Costa",
+        "role": "Testemunha externa",
+        "mediator_intro": "Testemunha externa",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha2_caso3.mp4",
+        "sort_order": 2,
+        "evidence_cards": [
+          {
+            "id": "135864c0-61aa-4ce5-bc11-8cb4585d4755",
+            "title": "Informação adicional",
+            "content": "Marina estava aproximadamente 50 metros distante e observava o veículo lateralmente.",
+            "source": "Repositório Git Titan X",
+            "type": "statement",
+            "reliability": "low",
+            "auto_reveal": true,
+            "sort_order": 1
+          }
+        ]
+      },
+      {
+        "id": "06f4bb46-19ab-4d60-8b21-79c992b9ddc0",
+        "number": 3,
+        "name": "Rafael Mendes",
+        "role": "Engenheiro",
+        "mediator_intro": "Engenheiro responsável",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha3_caso3.mp4",
+        "sort_order": 3,
+        "evidence_cards": [
+          {
+            "id": "903b66c2-a294-43a4-afd4-83d834352185",
+            "title": "Informação adicional",
+            "content": "Após apresentação do relatório interno, relatou: \"Nós sabíamos que existiam algumas inconsistências em determinadas condições.\"",
+            "source": "Repositório Git Titan X",
+            "type": "statement",
+            "reliability": "medium",
+            "auto_reveal": true,
+            "sort_order": 1
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "id": "51b5da9f-20ae-4f41-95dc-8770a6e59cf0",
+    "number": 4,
+    "code": "AV-777",
+    "title": "O JULGAMENTO DO ALGORITMO",
+    "subtitle": "Quem decide qual vida deve ser protegida?",
+    "difficulty": 5,
+    "is_final": true,
+    "points": 2,
+    "status": "published",
+    "sort_order": 1,
+    "summary": "O veículo protegeu quatro passageiros em uma situação envolvendo cinco pedestres, mas novas evidências revelaram infrações, vulnerabilidade, falhas técnicas e possível responsabilidade humana.",
+    "description": "Um robotáxi Titan X transportava quatro passageiros a 50 km/h quando identificou cinco pedestres atravessando uma avenida. O sistema calculou que uma frenagem não seria suficiente para evitar uma colisão. A alternativa evasiva permitiria evitar os pedestres, mas colocaria os quatro passageiros em grave risco. O algoritmo decidiu manter a trajetória e priorizar os ocupantes. Após o acidente, a investigação revelou uma série de circunstâncias adicionais: os pedestres atravessavam fora da faixa, uma das vítimas era uma criança, um dos passageiros havia desativado uma função de segurança do veículo pouco antes do acidente e um sensor apresentava uma pequena inconsistência. Também foi descoberto que o sistema havia interpretado incorretamente uma alteração na sinalização da via alguns segundos antes do acidente.",
+    "central_question": "É moralmente aceitável que um sistema autônomo priorize os passageiros quando sua decisão envolve sacrificar terceiros, especialmente quando fatores humanos e falhas técnicas contribuíram para criar a situação?",
+    "algorithm_title": "Prioridade de Sobrevivência dos Ocupantes sob Risco Assimétrico",
+    "algorithm_description": "O algoritmo calculou que manter a trajetória apresentava menor risco agregado para os ocupantes do veículo do que realizar uma manobra evasiva. A decisão foi tomada automaticamente em 0,7 segundo.",
+    "algorithm_justification": "O sistema utiliza uma função de risco que considera probabilidade de colisão, energia do impacto, número de indivíduos expostos, trajetória e confiança dos sensores. Na ausência de uma rota completamente segura, o sistema seleciona a alternativa com menor risco esperado para os ocupantes e demais pessoas detectadas.",
+    "reveal_justification": true,
+    "incident_data": {
+      "passengers": 4,
+      "pedestrians": 5,
+      "decision_time": 0.7,
+      "vehicle_speed": 50,
+      "survival_probability": 0,
+      "survival_probabilities": [
+        {
+          "decision": "Manter trajetória",
+          "probability": "5% para os pedestres"
+        },
+        {
+          "decision": "Desviar",
+          "probability": "65% para os passageiros"
+        }
+      ],
+      "location": "Avenida urbana, cruzamento sinalizado",
+      "weather": "Nublado",
+      "visibility": "Boa"
+    },
+    "evidence": [
+      {
+        "id": "fa1cc6b4-5675-4fde-8012-739ff96f194a",
+        "number": 1,
+        "title": "Cinco pedestres",
+        "description": "O sistema detectou cinco pessoas atravessando a via.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 1
+      },
+      {
+        "id": "1f6f5a5f-09b0-413d-b0c2-4c409c313293",
+        "number": 2,
+        "title": "Quatro passageiros",
+        "description": "O veículo transportava quatro pessoas.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 2
+      },
+      {
+        "id": "cb26124f-f9ee-4fb0-80b5-515345f0f927",
+        "number": 3,
+        "title": "Travessia irregular",
+        "description": "Os cinco pedestres estavam atravessando fora da faixa.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 3
+      },
+      {
+        "id": "aece3b2b-b7f3-45cc-bdd5-17742bd9538c",
+        "number": 4,
+        "title": "A criança",
+        "description": "Uma das pessoas no grupo tinha oito anos.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 4
+      },
+      {
+        "id": "7228a412-45e2-4476-b393-53829d9677d5",
+        "number": 5,
+        "title": "Tempo de decisão",
+        "description": "O veículo teve somente 0,7 segundo para escolher uma ação.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 5
+      },
+      {
+        "id": "49f675b9-d7cc-4a87-8a8a-6158093384e6",
+        "number": 6,
+        "title": "Probabilidades",
+        "description": "Manter a trajetória colocava cinco pedestres em risco extremo. Desviar apresentava 65% de probabilidade de morte de pelo menos dois passageiros.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 6
+      },
+      {
+        "id": "61d34249-a9b4-4612-a8ff-abdb37bffead",
+        "number": 7,
+        "title": "Passageiro responsável",
+        "description": "Um dos passageiros havia desativado manualmente uma função de segurança 20 minutos antes do acidente.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 7
+      },
+      {
+        "id": "6e2c55b4-eb83-4e12-b604-161d1b7f2ce4",
+        "number": 8,
+        "title": "Política da empresa",
+        "description": "A política oficial determina que o veículo deve priorizar a segurança dos ocupantes.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 8
+      },
+      {
+        "id": "cc031c1b-dfff-49fb-8993-66dae98b12f8",
+        "number": 9,
+        "title": "Motivo da política",
+        "description": "Documentos internos sugerem que a política foi criada principalmente para reduzir a exposição da empresa a processos judiciais de passageiros.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 9
+      },
+      {
+        "id": "de68aec4-6e46-47bb-b077-141cae5801ba",
+        "number": 10,
+        "title": "Sensor inconsistente",
+        "description": "Um sensor apresentou uma pequena inconsistência, alterando a estimativa de risco dos pedestres de 96% para 83%.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 10
+      },
+      {
+        "id": "48b3a58b-afc2-45de-b4a9-8501dccd6596",
+        "number": 11,
+        "title": "Erro anterior",
+        "description": "Dois segundos antes do acidente, o sistema interpretou incorretamente uma alteração na sinalização da avenida.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 11
+      },
+      {
+        "id": "e2d56934-cbe2-42e2-af14-6170cab81c2f",
+        "number": 12,
+        "title": "Simulação posterior",
+        "description": "Uma simulação com dados completos mostrou que uma frenagem iniciada dois segundos antes teria reduzido drasticamente a probabilidade de mortes.",
+        "category": "system_data",
+        "reveal_phase": "intro",
+        "sort_order": 12
+      }
+    ],
+    "witnesses": [
+      {
+        "id": "b1a92e99-342a-4ff9-8bf2-abf60b37b9f5",
+        "number": 1,
+        "name": "Marcelo Oliveira",
+        "role": "Passageiro",
+        "mediator_intro": "Passageiro",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha1_caso4.mp4",
+        "sort_order": 1,
+        "evidence_cards": [
+          {
+            "title": "Informação adicional",
+            "content": "Marcos é o passageiro que havia desativado a função de segurança.",
+            "source": "Repositório Git Titan X",
+            "type": "statement",
+            "reliability": "low",
+            "auto_reveal": true,
+            "sort_order": 1,
+            "id": "6f30b2d2-4c9a-4be9-a46b-adcf771499f0"
+          }
+        ]
+      },
+      {
+        "id": "5134fb25-9434-434f-aaf7-a20a81972ba4",
+        "number": 2,
+        "name": "Luíza Mendonça",
+        "role": "Pedestre",
+        "mediator_intro": "Pedestre",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha2_caso4.mp4",
+        "sort_order": 2,
+        "evidence_cards": [
+          {
+            "title": "Informações adicionais",
+            "content": "Luíza estava a aproximadamente 40 metros do local do acidente. Câmeras de segurança mostram ela utilizando o celular momentos antes.\n\nEm depoimento a outras testemunhas no local, disse que não conseguiu ver o interior do carro.",
+            "source": "Repositório Git Titan X",
+            "type": "statement",
+            "reliability": "unknown",
+            "auto_reveal": true,
+            "sort_order": 1,
+            "id": "5f724f7c-8f34-4d47-b1b3-1bfcf4e04b1d"
+          }
+        ]
+      },
+      {
+        "id": "3614b383-ad0b-4c97-a20a-98a3c3993c7f",
+        "number": 3,
+        "name": "Rafael Mendes",
+        "role": "Engenheiro responsável",
+        "mediator_intro": "Engenheiro responsável",
+        "duration_seconds": null,
+        "video_path": "/media/witnesses/opt_testemunha3_caso4.mp4",
+        "sort_order": 3,
+        "evidence_cards": []
+      }
+    ]
+  }
+]

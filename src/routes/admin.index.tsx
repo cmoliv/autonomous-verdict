@@ -23,7 +23,8 @@ import {
   deleteCaseById, 
   duplicateCaseById, 
   toggleCaseStatus,
-  importCasesMerge
+  importCasesMerge,
+  resetToDefaultCases
 } from "@/lib/cases.functions";
 import {
   Dialog,
@@ -146,6 +147,17 @@ function AdminDashboard() {
           <Button size="sm" variant="outline" className="gap-1.5" onClick={() => document.getElementById("import-cases")?.click()}>
             <Upload className="size-3.5" />
             Importar
+          </Button>
+          <Button size="sm" variant="outline" className="gap-1.5 hover:bg-bronze hover:text-white" onClick={() => {
+            if (confirm("Deseja recarregar os casos padrão do cases.json? Casos com IDs existentes serão substituídos pelos do arquivo.")) {
+              resetToDefaultCases();
+              queryClient.invalidateQueries({ queryKey: ["admin-cases"] });
+              queryClient.invalidateQueries({ queryKey: ["published-cases"] });
+              alert("Casos padrão de cases.json recarregados com sucesso!");
+            }
+          }}>
+            <RefreshCcw className="size-3.5" />
+            Restaurar Casos Padrão
           </Button>
           <Button size="sm" variant="outline" className="gap-1.5 hover:bg-destructive hover:text-destructive-foreground hover:border-destructive" onClick={() => {
             if (confirm("Tem certeza que deseja zerar o progresso dos casos e o placar da sessão ativa?")) {

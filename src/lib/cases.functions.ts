@@ -1,4 +1,5 @@
 import { z } from "zod";
+import defaultCasesJson from "../../cases.json";
 
 export type PublicCase = {
   id: string;
@@ -88,12 +89,32 @@ const STORAGE_KEY = "autonomous_verdict_cases";
 function getCases(): CaseFile[] {
   if (typeof window === "undefined") return [];
   const stored = localStorage.getItem(STORAGE_KEY);
+  
+  // Se não houver nada armazenado, ou for um array vazio, ou for apenas o seed inicial antigo (AV-001 com id antigo)
+  let shouldSeed = false;
   if (!stored) {
-    const seed = [SEED_AV001];
+    shouldSeed = true;
+  } else {
+    try {
+      const parsed = JSON.parse(stored);
+      if (!Array.isArray(parsed) || parsed.length === 0) {
+        shouldSeed = true;
+      } else if (parsed.length === 1 && parsed[0]?.id === "40780681-1ea6-4b59-ad3b-51b47c43f14a") {
+        // Era apenas o mock inicial antigo de 1 caso antes da importação do cases.json
+        shouldSeed = true;
+      }
+    } catch {
+      shouldSeed = true;
+    }
+  }
+
+  if (shouldSeed) {
+    const seed = defaultCasesJson as unknown as CaseFile[];
     localStorage.setItem(STORAGE_KEY, JSON.stringify(seed));
     return seed;
   }
-  const parsed = JSON.parse(stored) as CaseFile[];
+
+  const parsed = JSON.parse(stored!) as CaseFile[];
   
   // Migration for early seed data that used invalid UUIDs
   let mutated = false;
@@ -110,6 +131,13 @@ function getCases(): CaseFile[] {
   });
   if (mutated) saveCases(parsed);
   return parsed;
+}
+
+export function resetToDefaultCases() {
+  if (typeof window === "undefined") return [];
+  const seed = defaultCasesJson as unknown as CaseFile[];
+  saveCases(seed);
+  return seed;
 }
 
 function saveCases(cases: CaseFile[]) {
